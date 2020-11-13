@@ -1,7 +1,5 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button'
-import { createAppContainer } from 'react-navigation'
-import { createStackNavigator } from 'react-navigation-stack'
 
 class Home extends React.Component {
   render() {
@@ -18,10 +16,4 @@ class Home extends React.Component {
   }
 }
 
-const AppNavigator = createStackNavigator({
-  Home: {
-    screen: Home,
-  },
-})
-
-export default createAppContainer(AppNavigator)
+export default Home
