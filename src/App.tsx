@@ -1,7 +1,8 @@
 import React from 'react'
 
+import AppContainer from './screens/Home'
 import { Block, Container, Row } from 'styles'
 
-const App = () => <div>App {process.env.REACT_APP_FIREBASE_API_KEY}</div>
+const App = () => <AppContainer />
 
 export default App
