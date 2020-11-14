@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from 'react-bootstrap/Button'
+import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,7 +10,7 @@ import {
 
 const Home = () => {
   const history = useHistory()
-  const redirect = () => history.push('/lobby')
+  const redirect = () => history.push('/login')
 
   function create() {
     redirect()
@@ -21,16 +21,18 @@ const Home = () => {
   }
 
   return (
-    <Router>
-      <div>
+    <Col>
+      <Row className="justify-content-center">
         <Button variant="outline-secondary" size="lg" onClick={create}>
           Create a game
         </Button>
+      </Row>
+      <Row className="justify-content-center">
         <Button variant="outline-secondary" size="lg" onClick={join}>
           Join a game
         </Button>
-      </div>
-    </Router>
+      </Row>
+    </Col>
   )
 }
 

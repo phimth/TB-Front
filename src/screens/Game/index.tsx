@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 
 interface Game {
   game_id: number
@@ -14,7 +15,7 @@ interface Game {
 
 class GameScreen extends React.Component {
   render() {
-    return <div>Game</div>
+    return <Row className="justify-content-center">c Game</Row>
   }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from 'react-bootstrap/Button'
+import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,6 +7,7 @@ import {
   Link,
   useHistory,
 } from 'react-router-dom'
+
 interface Lobby {
   lobby_id: number
   players: []
@@ -23,13 +24,16 @@ const LobbyScreen = () => {
   }
 
   return (
-    <div>
-      <h1>Lobby</h1>
-      <div>Liste</div>
-      <Button variant="outline-secondary" size="lg" onClick={start}>
-        Start
+    <Col>
+      <Row className="justify-content-center">
+        Liste
+      </Row>
+      <Row className="justify-content-center">
+        <Button variant="outline-secondary" onClick={start}>
+          Start
       </Button>
-    </div>
+      </Row>
+    </Col>
   )
 }
 
