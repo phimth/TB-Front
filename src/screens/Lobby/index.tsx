@@ -1,6 +1,12 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button'
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useHistory,
+} from 'react-router-dom'
 interface Lobby {
   lobby_id: number
   players: []
@@ -8,15 +14,23 @@ interface Lobby {
   host_id: number
 }
 
-class LobbyScreen extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Lobby</h1>
-        <div>Liste</div>
-      </div>
-    )
+const LobbyScreen = () => {
+  const history = useHistory()
+  const redirect = () => history.push('/game')
+
+  function start() {
+    redirect()
   }
+
+  return (
+    <div>
+      <h1>Lobby</h1>
+      <div>Liste</div>
+      <Button variant="outline-secondary" size="lg" onClick={start}>
+        Start
+      </Button>
+    </div>
+  )
 }
 
 export default LobbyScreen
