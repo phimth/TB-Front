@@ -6,22 +6,22 @@ import {
   Route,
   Link,
   useHistory,
+  useLocation
 } from 'react-router-dom'
 
 const Home = () => {
   const history = useHistory()
-  const redirect = () => history.push('/login')
 
   function create() {
-    redirect()
+    history.push('/login',true)
   }
 
   function join() {
-    redirect()
+    history.push('/login',false)
   }
 
   return (
-    <Col>
+    <div className="">
       <Row className="justify-content-center">
         <Button variant="outline-secondary" size="lg" onClick={create}>
           Create a game
@@ -29,10 +29,10 @@ const Home = () => {
       </Row>
       <Row className="justify-content-center">
         <Button variant="outline-secondary" size="lg" onClick={join}>
-          Join a game
+          Join a game 
         </Button>
       </Row>
-    </Col>
+    </div>
   )
 }
 

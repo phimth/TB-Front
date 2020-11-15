@@ -6,30 +6,52 @@ import {
     Route,
     Link,
     useHistory,
+    useLocation
 } from 'react-router-dom'
 
 const LoginScreen = () => {
+    const [name,setName] = React.useState("")
+
+    const [code,setCode] = React.useState("")
+
+    const location = useLocation()
+    const isCreator = location.state
 
     const history = useHistory()
-    const redirect = () => history.push('/lobby')
+    const redirect = () => history.push('/lobby',isCreator)
+
+    const handleSubmit = (e: { preventDefault: () => void }) => {
+        e.preventDefault();
+        enter()
+      };
 
     function enter() {
-        redirect()
+
+        if(isCreator){
+
+            redirect()
+
+        }else{
+            
+            redirect()
+        }
     }
 
     return (
         <Row className="justify-content-center">
             <Form>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Pseudo</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
+                <Form.Group controlId="formBasicEmail"> 
+                    <Form.Control type="text" placeholder="Pseudo" onChange={e => setName(e.target.value)}/>
                     <Form.Text className="text-muted">
-                        Please select your name ingame.
+                        Choisissez votre pseudo.
                     </Form.Text>
+                    {!isCreator ?
+                        <Form.Control type="text" placeholder="Code du Lobby" onChange={e => setCode(e.target.value)}/>
+                    :null}
                 </Form.Group>
 
-                <Button variant="outline-secondary" onClick={enter}>
-                    Join
+                <Button variant="outline-secondary" onClick={handleSubmit}>
+                    {isCreator ? 'Create game' : 'Join game'}
             </Button>
             </Form>
         </Row>

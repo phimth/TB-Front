@@ -8,6 +8,8 @@ import LobbyScreen from './screens/Lobby'
 import GameScreen from './screens/Game'
 import LoginScreen from './screens/Login'
 
+//{process.env.REACT_APP_FIREBASE_API_KEY}
+
 const App = () => {
   return (
     <Container fluid>
