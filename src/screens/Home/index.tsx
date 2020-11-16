@@ -1,23 +1,21 @@
 import React from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useHistory,
-  useLocation
-} from 'react-router-dom'
+import { propTypes } from 'react-bootstrap/esm/Image'
+import LoginScreen from 'screens/Login'
 
-const Home = () => {
-  const history = useHistory()
+import GameState from '../../models/GameState'
 
+interface Props {
+  login: (isCretor: boolean) => void
+}
+
+const Home: React.FC<Props> = (props) => {
   function create() {
-    history.push('/login',true)
+    props.login(true)
   }
 
   function join() {
-    history.push('/login',false)
+    props.login(false)
   }
 
   return (
@@ -29,7 +27,7 @@ const Home = () => {
       </Row>
       <Row className="justify-content-center">
         <Button variant="outline-secondary" size="lg" onClick={join}>
-          Join a game 
+          Join a game
         </Button>
       </Row>
     </div>
