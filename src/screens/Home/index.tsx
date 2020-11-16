@@ -1,7 +1,13 @@
 import React from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
-import { propTypes } from 'react-bootstrap/esm/Image'
 import LoginScreen from 'screens/Login'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import {
+  useParams,
+  RouteComponentProps,
+  useHistory,
+  useLocation,
+} from 'react-router-dom'
 
 import GameState from '../../models/GameState'
 
@@ -10,12 +16,14 @@ interface Props {
 }
 
 const Home: React.FC<Props> = (props) => {
+  const history = useHistory()
+
   function create() {
-    props.login(true)
+    history.push('/login', true)
   }
 
   function join() {
-    props.login(false)
+    history.push('/login', false)
   }
 
   return (

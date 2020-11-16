@@ -1,18 +1,17 @@
 import React from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
+import {
+  useParams,
+  RouteComponentProps,
+  useHistory,
+  useLocation,
+} from 'react-router-dom'
 
 interface Lobby {
   lobby_id: number
   players: []
   max_players: number
   host_id: number
-}
-
-interface Todo {
-  userId: number
-  id: number
-  title: string
-  completed: boolean
 }
 
 interface User {
@@ -32,26 +31,28 @@ async function getLobby(): Promise<User[]> {
     })
 }
 
-interface Props {
-  isCreator: boolean
-  start: () => void
-}
+type TParams = { id: string }
 
-const LobbyScreen: React.FC<Props> = (props) => {
+function LobbyScreen({ match }: RouteComponentProps<TParams>) {
   //let user: User[] = new Array()
   /*await getLobby().then(function (res) {
     for (const [key, value] of Object.entries(res)) {
       user.push(value as User)
     }
   })*/
+  const history = useHistory()
+  const redirect = () => history.push('/game')
+
+  const location = useLocation()
+  const isCreator = location.state
   function start() {
-    props.start()
+    redirect()
   }
 
   return (
     <Col>
-      <Row className="justify-content-center">Liste</Row>
-      {props.isCreator ? (
+      <Row className="justify-content-center">Liste {match.params.id}</Row>
+      {isCreator ? (
         <Row className="justify-content-center">
           <Button variant="outline-secondary" onClick={start}>
             Start

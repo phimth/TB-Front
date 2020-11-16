@@ -1,5 +1,11 @@
 import React from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
+import {
+  useParams,
+  RouteComponentProps,
+  useHistory,
+  useLocation,
+} from 'react-router-dom'
 
 interface Props {
   isCreator: boolean
@@ -11,16 +17,22 @@ const LoginScreen: React.FC<Props> = (props) => {
 
   const [code, setCode] = React.useState('')
 
+  const location = useLocation()
+  const isCreator = location.state
+
+  const history = useHistory()
+  const redirect = () => history.push('/lobby', isCreator)
+
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault()
     enter()
   }
 
   function enter() {
-    if (props.isCreator) {
-      props.join()
+    if (isCreator) {
+      history.push('/lobby', isCreator)
     } else {
-      props.join()
+      history.push('/lobby/' + code, isCreator)
     }
   }
 
@@ -34,7 +46,7 @@ const LoginScreen: React.FC<Props> = (props) => {
             onChange={(e) => setName(e.target.value)}
           />
           <Form.Text className="text-muted">Choisissez votre pseudo.</Form.Text>
-          {!props.isCreator ? (
+          {!isCreator ? (
             <Form.Control
               type="text"
               placeholder="Code du Lobby"
@@ -44,7 +56,7 @@ const LoginScreen: React.FC<Props> = (props) => {
         </Form.Group>
 
         <Button variant="outline-secondary" onClick={handleSubmit}>
-          {props.isCreator ? 'Create game' : 'Join game'}
+          {isCreator ? 'Create game' : 'Join game'}
         </Button>
       </Form>
     </Row>
