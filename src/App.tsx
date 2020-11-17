@@ -1,7 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react'
-import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 
 import GameStateModel from './models/GameStateModel'
 
@@ -11,7 +10,8 @@ const App = () => {
   const Lobby = lazy(() => import('./screens/Lobby'))
   //  const Lobby = lazy(() => Promise.resolve(require('./screens/Lobby')))
   const Login = lazy(() => import('./screens/Login'))
-
+  const Join = lazy(() => import('./screens/Join'))
+  const Create = lazy(() => import('./screens/Create'))
   const [state, setState] = useState(GameStateModel.Home)
 
   const [isCreator, setIsCreator] = useState(false)
@@ -34,6 +34,8 @@ const App = () => {
         <Route exact path="/" component={Home} />
         <Route path="/game/:id" component={Game} />
         <Route path="/login" component={Login} />
+        <Route path="/join" component={Join} />
+        <Route path="/create" component={Create} />
       </Suspense>
     </Switch>
   )

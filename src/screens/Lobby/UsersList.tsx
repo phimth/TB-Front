@@ -3,16 +3,23 @@ import UserModel from '../../models/UserModel'
 import UserCard from './UserCard'
 
 interface IProps {
-  users: UserModel[]
+  users: Todos[]
+}
+
+interface Todos {
+  userId: number
+  id: number
+  title: string
+  completed: boolean
 }
 
 const UsersList: FC<IProps> = (props) => {
   const { users } = props
   return (
-    <ul className="list-group">
+    <ul>
       {users &&
         users.map((user) => {
-          return <UserCard user={user} />
+          return <UserCard key={user.id} user={user} />
         })}
     </ul>
   )

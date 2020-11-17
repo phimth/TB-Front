@@ -15,11 +15,11 @@ const Home: FC = () => {
   const history = useHistory()
 
   function create() {
-    history.push('/login', true)
+    history.push('/create')
   }
 
   function join() {
-    history.push('/login', false)
+    history.push('/join')
   }
 
   return (

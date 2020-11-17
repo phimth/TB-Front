@@ -21,7 +21,7 @@ interface Params {
   id: string
 }
 const LobbyScreen: React.FC = () => {
-  const serveurUrl = process.env.REACT_APP_SERVER_URL
+  const serverUrl = process.env.REACT_APP_SERVER_URL
   const id = useParams<Params>().id
   const history = useHistory()
   const redirect = () => history.push('/game' + id)
@@ -30,10 +30,10 @@ const LobbyScreen: React.FC = () => {
   const [users, setUsers] = useState<UserModel[]>([])
   const [roomExists, setRoomExists] = useState(true)
 
-  const [todos, setTodos] = useState<Todos>()
+  const [todos, setTodos] = useState<Todos[]>([])
 
   const getTodos = async () => {
-    let r = await fetch(serveurUrl + id)
+    let r = await fetch(serverUrl + '?userId=' + id) //serverUrl+id
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
     setRoomExists(r.ok)
@@ -51,8 +51,7 @@ const LobbyScreen: React.FC = () => {
     return (
       <Col>
         <Row className="justify-content-center">
-          <UsersList users={users} />
-          <p>{todos?.title}</p>
+          <UsersList users={todos} />
         </Row>
         {isCreator ? (
           <Row className="justify-content-center">
