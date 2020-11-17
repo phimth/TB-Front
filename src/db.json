@@ -1,0 +1,13 @@
+{
+  "lobbys": [
+    {
+      "lobby_id": "1",
+      "players": ["1"],
+      "max_players": 8,
+      "host_id": "1"
+    }
+  ],
+  "users": [{}],
+  "players": [{}],
+  "game": [{}]
+}

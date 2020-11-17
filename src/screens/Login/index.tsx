@@ -7,6 +7,8 @@ import {
   useLocation,
 } from 'react-router-dom'
 
+import UseLobby from '../../hooks/use-lobby'
+
 interface Props {
   isCreator: boolean
   join: () => void
@@ -21,7 +23,6 @@ const LoginScreen: React.FC<Props> = (props) => {
   const isCreator = location.state
 
   const history = useHistory()
-  const redirect = () => history.push('/lobby', isCreator)
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault()

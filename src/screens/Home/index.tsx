@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import LoginScreen from 'screens/Login'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -9,13 +9,9 @@ import {
   useLocation,
 } from 'react-router-dom'
 
-import GameState from '../../models/GameState'
+import GameStateModel from '../../models/GameStateModel'
 
-interface Props {
-  login: (isCretor: boolean) => void
-}
-
-const Home: React.FC<Props> = (props) => {
+const Home: FC = () => {
   const history = useHistory()
 
   function create() {
