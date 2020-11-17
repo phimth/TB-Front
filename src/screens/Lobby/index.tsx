@@ -6,8 +6,6 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom'
-import UseLobby from '../../hooks/use-lobby'
-import { http } from '../../API'
 import UsersList from './UsersList'
 import UserModel from '../../models/UserModel'
 type TParams = { id: string }
@@ -22,8 +20,8 @@ interface Todos {
 interface Params {
   id: string
 }
-
 const LobbyScreen: React.FC = () => {
+  const serveurUrl = process.env.REACT_APP_SERVER_URL
   const id = useParams<Params>().id
   const history = useHistory()
   const redirect = () => history.push('/game' + id)
@@ -35,7 +33,7 @@ const LobbyScreen: React.FC = () => {
   const [todos, setTodos] = useState<Todos>()
 
   const getTodos = async () => {
-    let r = await fetch('https://jsonplaceholder.typicode.com/todos/' + id)
+    let r = await fetch(serveurUrl + id)
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
     setRoomExists(r.ok)

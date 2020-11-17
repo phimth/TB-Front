@@ -7,8 +7,6 @@ import {
   useLocation,
 } from 'react-router-dom'
 
-import UseLobby from '../../hooks/use-lobby'
-
 interface Props {
   isCreator: boolean
   join: () => void
