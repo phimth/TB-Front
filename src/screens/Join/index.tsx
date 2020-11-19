@@ -30,8 +30,6 @@ const JoinScreen: React.FC<Props> = (props) => {
     if (form.checkValidity() === false) {
       e.preventDefault()
       e.stopPropagation()
-    } else {
-      enter()
     }
     setValidated(true)
   }
@@ -43,7 +41,7 @@ const JoinScreen: React.FC<Props> = (props) => {
   return (
     <Row className="justify-content-center">
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicEmail">
+        <Form.Group controlId="nameId">
           <Form.Control
             required
             type="text"
@@ -53,7 +51,8 @@ const JoinScreen: React.FC<Props> = (props) => {
           <Form.Control.Feedback type="invalid">
             Veuillez entrer votre pseudo.
           </Form.Control.Feedback>
-          <br />
+        </Form.Group>
+        <Form.Group controlId="codeId">
           <Form.Control
             required
             type="text"

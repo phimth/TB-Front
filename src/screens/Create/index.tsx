@@ -36,12 +36,14 @@ const CreateScreen: React.FC<Props> = (props) => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      enter()
+      create()
     }
     setValidated(true)
   }
 
-  function enter() {
+  const createRoom = async () => {}
+
+  function create() {
     history.push('/lobby/1', true)
   }
 

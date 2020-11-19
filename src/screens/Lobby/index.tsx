@@ -24,49 +24,45 @@ const LobbyScreen: React.FC = () => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
   const id = useParams<Params>().id
   const history = useHistory()
-  const redirect = () => history.push('/game' + id)
+  const redirect = () => history.push('/game/' + id)
   const location = useLocation()
   const isCreator = location.state
   const [users, setUsers] = useState<UserModel[]>([])
-  const [roomExists, setRoomExists] = useState(true)
 
   const [todos, setTodos] = useState<Todos[]>([])
 
   const getTodos = async () => {
+    // to export
     let r = await fetch(serverUrl + '?userId=' + id) //serverUrl+id
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
-    setRoomExists(r.ok)
     let todo = await r.json()
     setTodos(todo)
+    if (todo.length == 0) history.push('/join') // case user change url
   }
 
   useEffect(() => {
     getTodos()
-  }, [id])
+  }, [id]) // add userlist
   function start() {
     redirect()
   }
-  if (roomExists) {
-    return (
-      <Col>
+  return (
+    <Col>
+      <Row className="justify-content-center">
+        <UsersList users={todos} />
+      </Row>
+      {isCreator ? (
         <Row className="justify-content-center">
-          <UsersList users={todos} />
+          <Button variant="outline-secondary" onClick={start}>
+            Start
+          </Button>
         </Row>
-        {isCreator ? (
-          <Row className="justify-content-center">
-            <Button variant="outline-secondary" onClick={start}>
-              Start
-            </Button>
-          </Row>
-        ) : (
-          <div>hi</div>
-        )}
-      </Col>
-    )
-  } else {
-    return <div>Room does not exists</div>
-  }
+      ) : (
+        <div>hi</div>
+      )}
+    </Col>
+  )
 }
 
 export default LobbyScreen as React.ComponentType<any>
