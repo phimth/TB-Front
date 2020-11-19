@@ -1,1 +1,15 @@
 Liste de Lobbys -> ajouter un champ nom pour LobbyModel
+
+createRoom(){ /screens/Create
+    //vérifier si user n'est pas déjà host
+    //générer id qui n'existe pas
+    //créer lobby avec cet id
+    //update user's lobby_id
+    //return lobby_id
+}
+
+joinRoom(){ /screens/join
+    //create new user with name
+    //add user to user_lobby
+    //return validate
+}

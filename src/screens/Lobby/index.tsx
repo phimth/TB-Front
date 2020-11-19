@@ -20,13 +20,19 @@ interface Todos {
 interface Params {
   id: string
 }
+
+interface ILocation {
+  isCreator: boolean
+  name: string
+}
 const LobbyScreen: React.FC = () => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
   const id = useParams<Params>().id
   const history = useHistory()
   const redirect = () => history.push('/game/' + id)
-  const location = useLocation()
-  const isCreator = location.state
+  const location = useLocation<ILocation>().state
+  let isCreator, name
+
   const [isFetching, setFetching] = useState(false)
   const [users, setUsers] = useState<UserModel[]>([])
 
@@ -39,13 +45,18 @@ const LobbyScreen: React.FC = () => {
     //.then((data) => setTodos(data))
     let todo = await r.json()
     setTodos(todo)
-    if (todo.length == 0) history.push('/join') // case user change url
+    if (todo.length == 0) history.push('/join') // gérer tous les cas d'erreur
   }
 
   useEffect(() => {
-    setFetching(false)
+    //cas ou l'url est changée
+    if (location == undefined || id == undefined) {
+      history.push('/join')
+    } else {
+      isCreator = location.isCreator
+      name = location.name
+    }
     getTodos()
-    setFetching(true)
   }, [id]) // add userlist
   function start() {
     redirect()
@@ -53,7 +64,7 @@ const LobbyScreen: React.FC = () => {
   return (
     <Col>
       <Row className="justify-content-center">
-        {isFetching ? <UsersList users={todos} /> : <div>Loading users..</div>}
+        <UsersList users={todos} />
       </Row>
       {isCreator ? (
         <Row className="justify-content-center">

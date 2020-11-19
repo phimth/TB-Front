@@ -27,8 +27,8 @@ const JoinScreen: React.FC<Props> = (props) => {
     stopPropagation: () => void
   }) => {
     const form = e.currentTarget
+    e.preventDefault()
     if (form.checkValidity() === false) {
-      e.preventDefault()
       e.stopPropagation()
     } else {
       joinRoom()
@@ -44,7 +44,7 @@ const JoinScreen: React.FC<Props> = (props) => {
   }
 
   function enter() {
-    history.push('/lobby/' + code, false)
+    history.push('/lobby/' + code, { isCreator: false, name })
   }
 
   return (
