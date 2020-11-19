@@ -41,10 +41,16 @@ const CreateScreen: React.FC<Props> = (props) => {
     setValidated(true)
   }
 
-  const createRoom = async () => {}
+  const createRoom = async () => {
+    //vérifier si user n'est pas déjà host
+    //générer id qui n'existe pas
+    //créer lobby avec cet id
+    //update user's lobby_id
+    //return lobby_id
+  }
 
   function create() {
-    history.push('/lobby/1', true)
+    history.push('/lobby/1', true) //mettre new id
   }
 
   return (

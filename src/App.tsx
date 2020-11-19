@@ -33,9 +33,9 @@ const App = () => {
         <Route path="/lobby/:id" component={Lobby} />
         <Route exact path="/" component={Home} />
         <Route path="/game/:id" component={Game} />
-        <Route path="/login" component={Login} />
-        <Route path="/join" component={Join} />
-        <Route path="/create" component={Create} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/join" component={Join} />
+        <Route exact path="/create" component={Create} />
       </Suspense>
     </Switch>
   )

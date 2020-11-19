@@ -27,6 +27,7 @@ const LobbyScreen: React.FC = () => {
   const redirect = () => history.push('/game/' + id)
   const location = useLocation()
   const isCreator = location.state
+  const [isFetching, setFetching] = useState(false)
   const [users, setUsers] = useState<UserModel[]>([])
 
   const [todos, setTodos] = useState<Todos[]>([])
@@ -42,7 +43,9 @@ const LobbyScreen: React.FC = () => {
   }
 
   useEffect(() => {
+    setFetching(false)
     getTodos()
+    setFetching(true)
   }, [id]) // add userlist
   function start() {
     redirect()
@@ -50,7 +53,7 @@ const LobbyScreen: React.FC = () => {
   return (
     <Col>
       <Row className="justify-content-center">
-        <UsersList users={todos} />
+        {isFetching ? <UsersList users={todos} /> : <div>Loading users..</div>}
       </Row>
       {isCreator ? (
         <Row className="justify-content-center">

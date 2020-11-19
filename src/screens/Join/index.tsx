@@ -30,8 +30,17 @@ const JoinScreen: React.FC<Props> = (props) => {
     if (form.checkValidity() === false) {
       e.preventDefault()
       e.stopPropagation()
+    } else {
+      joinRoom()
+      enter()
     }
     setValidated(true)
+  }
+
+  const joinRoom = async () => {
+    //create new user with name
+    //add user to user_lobby
+    //return validate
   }
 
   function enter() {
