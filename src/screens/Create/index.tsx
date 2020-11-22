@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   useParams,
@@ -21,6 +21,8 @@ const CreateScreen: React.FC<Props> = (props) => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
   const [name, setName] = React.useState('')
 
+  const [validateName, setValidateName] = React.useState(false)
+
   const [code, setCode] = React.useState('')
 
   const [user, setUser] = React.useState()
@@ -39,9 +41,7 @@ const CreateScreen: React.FC<Props> = (props) => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      console.log(name)
-      createUser()
-      //create()
+      setValidateName(true)
     }
     setValidated(true)
   }
@@ -52,9 +52,21 @@ const CreateScreen: React.FC<Props> = (props) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: name }),
     }
-    fetch(serverUrl + '/users', requestOptions)
-      .then((response) => response.json())
-      .then((data) => console.log(data))
+    fetch(serverUrl + 'users/', requestOptions)
+      .then(async (response) => {
+        const data = await response.json()
+
+        // check for error response
+        if (!response.ok) {
+          // get error message from body or default to response status
+          const error = (data && data.message) || response.status
+          return Promise.reject(error)
+        }
+        setUser(data)
+      })
+      .catch((error) => {
+        console.error('There was an error!', error)
+      })
   }
 
   const createRoom = async () => {
@@ -64,6 +76,14 @@ const CreateScreen: React.FC<Props> = (props) => {
     //update user's lobby_id
     //return lobby_id
   }
+
+  useEffect(() => {
+    createUser()
+  }, [validateName])
+
+  useEffect(() => {
+    createRoom()
+  }, [user])
 
   function create() {
     history.push('/lobby/1', true) //mettre new id
