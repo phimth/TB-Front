@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 import UsersList from './UsersList'
 import UserModel from '../../models/UserModel'
+import useTodos from '../../hooks/useTodos'
 type TParams = { id: string }
 
 interface Todos {
@@ -37,7 +38,6 @@ const LobbyScreen: React.FC = () => {
   const [users, setUsers] = useState<UserModel[]>([])
 
   const [todos, setTodos] = useState<Todos[]>([])
-
   const getTodos = async () => {
     // to export
     let r = await fetch(serverUrl + '?userId=' + id) //serverUrl+id
@@ -66,14 +66,12 @@ const LobbyScreen: React.FC = () => {
       <Row className="justify-content-center">
         <UsersList users={todos} />
       </Row>
-      {isCreator ? (
+      {isCreator && (
         <Row className="justify-content-center">
           <Button variant="outline-secondary" onClick={start}>
             Start
           </Button>
         </Row>
-      ) : (
-        <div>hi</div>
       )}
     </Col>
   )

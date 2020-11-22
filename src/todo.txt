@@ -10,6 +10,7 @@ createRoom(){ /screens/Create
 
 joinRoom(){ /screens/join
     //create new user with name
+    //vérifier que user n'est pas deja dans le lobby
     //add user to user_lobby
     //return validate
 }

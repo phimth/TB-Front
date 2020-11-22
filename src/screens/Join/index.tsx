@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   useParams,
@@ -46,6 +46,8 @@ const JoinScreen: React.FC<Props> = (props) => {
   function enter() {
     history.push('/lobby/' + code, { isCreator: false, name })
   }
+
+  useEffect(() => {})
 
   return (
     <Row className="justify-content-center">

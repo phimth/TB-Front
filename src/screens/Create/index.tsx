@@ -18,9 +18,12 @@ interface CreateFormProps {
 }
 
 const CreateScreen: React.FC<Props> = (props) => {
+  const serverUrl = process.env.REACT_APP_SERVER_URL
   const [name, setName] = React.useState('')
 
   const [code, setCode] = React.useState('')
+
+  const [user, setUser] = React.useState()
 
   const history = useHistory()
 
@@ -36,9 +39,22 @@ const CreateScreen: React.FC<Props> = (props) => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      create()
+      console.log(name)
+      createUser()
+      //create()
     }
     setValidated(true)
+  }
+
+  const createUser = async () => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: name }),
+    }
+    fetch(serverUrl + '/users', requestOptions)
+      .then((response) => response.json())
+      .then((data) => console.log(data))
   }
 
   const createRoom = async () => {
