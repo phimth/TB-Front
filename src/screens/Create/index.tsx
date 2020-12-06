@@ -6,7 +6,8 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom'
-
+import UserModel from '../../models/UserModel'
+import useCreateUser from '../../hooks/use-create-user'
 interface Props {
   isCreator: boolean
   join: () => void
@@ -19,13 +20,7 @@ interface CreateFormProps {
 
 const CreateScreen: React.FC<Props> = (props) => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
-  const [name, setName] = React.useState('')
-
-  const [validateName, setValidateName] = React.useState(false)
-
-  const [code, setCode] = React.useState('')
-
-  const [user, setUser] = React.useState()
+  const [name, setName] = React.useState<string>()
 
   const history = useHistory()
 
@@ -41,8 +36,9 @@ const CreateScreen: React.FC<Props> = (props) => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      setValidateName(true)
+      runCreate()
     }
+    e.preventDefault()
     setValidated(true)
   }
 
@@ -52,41 +48,32 @@ const CreateScreen: React.FC<Props> = (props) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: name }),
     }
-    fetch(serverUrl + 'users/', requestOptions)
-      .then(async (response) => {
-        const data = await response.json()
+    let r = await fetch(serverUrl + 'users/', requestOptions)
 
-        // check for error response
-        if (!response.ok) {
-          // get error message from body or default to response status
-          const error = (data && data.message) || response.status
-          return Promise.reject(error)
-        }
-        setUser(data)
-      })
-      .catch((error) => {
-        console.error('There was an error!', error)
-      })
+    let data = await r.json()
+    return data
   }
 
-  const createRoom = async () => {
-    //vérifier si user n'est pas déjà host
-    //générer id qui n'existe pas
-    //créer lobby avec cet id
-    //update user's lobby_id
-    //return lobby_id
+  const createLobby = async (id: number) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ host: id }),
+    }
+    let r = await fetch(serverUrl + 'lobby-management/', requestOptions)
+
+    let data = await r.json()
+    return data
   }
 
-  useEffect(() => {
-    createUser()
-  }, [validateName])
-
-  useEffect(() => {
-    createRoom()
-  }, [user])
-
-  function create() {
-    history.push('/lobby/1', true) //mettre new id
+  const runCreate = async () => {
+    try {
+      const data = await createUser()
+      const lobby = await createLobby(data.id)
+      history.push('lobby/' + lobby.id, { isCreator: true, user: data })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

@@ -24,7 +24,7 @@ interface Params {
 
 interface ILocation {
   isCreator: boolean
-  name: string
+  user: UserModel
 }
 const LobbyScreen: React.FC = () => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
@@ -32,7 +32,7 @@ const LobbyScreen: React.FC = () => {
   const history = useHistory()
   const redirect = () => history.push('/game/' + id)
   const location = useLocation<ILocation>().state
-  let isCreator, name
+  let isCreator, user
 
   const [isFetching, setFetching] = useState(false)
   const [users, setUsers] = useState<UserModel[]>([])
@@ -40,7 +40,7 @@ const LobbyScreen: React.FC = () => {
   const [todos, setTodos] = useState<Todos[]>([])
   const getTodos = async () => {
     // to export
-    let r = await fetch(serverUrl + '?userId=' + id) //serverUrl+id
+    let r = await fetch(serverUrl + 'lobby/' + id) //serverUrl+id
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
     let todo = await r.json()
@@ -54,7 +54,7 @@ const LobbyScreen: React.FC = () => {
       history.push('/join')
     } else {
       isCreator = location.isCreator
-      name = location.name
+      user = location.user
     }
     getTodos()
   }, [id]) // add userlist
