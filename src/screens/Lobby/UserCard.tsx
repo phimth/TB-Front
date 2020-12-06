@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import UserModel from '../../models/UserModel'
 
 interface IProps {
-  user: Todos
+  user: UserModel
 }
 
 interface Todos {
@@ -14,7 +14,7 @@ interface Todos {
 
 const UserCard: FC<IProps> = (props) => {
   const { user } = props
-  return <div>{user.title}</div>
+  return <div>{user.username}</div>
 }
 
 export default UserCard

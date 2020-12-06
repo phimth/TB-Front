@@ -38,14 +38,14 @@ const LobbyScreen: React.FC = () => {
   const [users, setUsers] = useState<UserModel[]>([])
 
   const [todos, setTodos] = useState<Todos[]>([])
-  const getTodos = async () => {
+  const getLobby = async () => {
     // to export
     let r = await fetch(serverUrl + 'lobby/' + id) //serverUrl+id
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
-    let todo = await r.json()
-    setTodos(todo)
-    if (todo.length == 0) history.push('/join') // gérer tous les cas d'erreur
+    let users = await r.json()
+    setUsers(users)
+    if (users.length == 0) history.push('/join') // gérer tous les cas d'erreur
   }
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const LobbyScreen: React.FC = () => {
       isCreator = location.isCreator
       user = location.user
     }
-    getTodos()
+    getLobby()
   }, [id]) // add userlist
   function start() {
     redirect()
@@ -64,7 +64,7 @@ const LobbyScreen: React.FC = () => {
   return (
     <Col>
       <Row className="justify-content-center">
-        <UsersList users={todos} />
+        <UsersList users={users} />
       </Row>
       {isCreator && (
         <Row className="justify-content-center">

@@ -3,7 +3,7 @@ import UserModel from '../../models/UserModel'
 import UserCard from './UserCard'
 
 interface IProps {
-  users: Todos[]
+  users: UserModel[]
 }
 
 interface Todos {
