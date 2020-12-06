@@ -6,6 +6,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom'
+import { isForOfStatement } from 'typescript'
 
 interface Props {
   isCreator: boolean
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const JoinScreen: React.FC<Props> = (props) => {
+  const serverUrl = process.env.REACT_APP_SERVER_URL
   const [name, setName] = React.useState('')
 
   const [code, setCode] = React.useState('')
@@ -27,27 +29,48 @@ const JoinScreen: React.FC<Props> = (props) => {
     stopPropagation: () => void
   }) => {
     const form = e.currentTarget
-    e.preventDefault()
     if (form.checkValidity() === false) {
       e.stopPropagation()
     } else {
-      joinRoom()
-      enter()
+      runJoin()
     }
+    e.preventDefault()
     setValidated(true)
   }
 
-  const joinRoom = async () => {
-    //create new user with name
-    //add user to user_lobby
-    //return validate
+  const createUser = async () => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: name }),
+    }
+    let r = await fetch(serverUrl + 'users/', requestOptions)
+
+    let data = await r.json()
+    return data
   }
 
-  function enter() {
-    history.push('/lobby/' + code, { isCreator: false, name })
+  const joinLobby = async (id: number) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: id }),
+    }
+
+    let r = await fetch(serverUrl + 'lobby/' + code + '/users', requestOptions)
+    let data = await r.json()
+    return data
   }
 
-  useEffect(() => {})
+  const runJoin = async () => {
+    try {
+      const data = await createUser()
+      const lobby = await joinLobby(data.id)
+      history.push('lobby/' + lobby.id, { isCreator: false, user: data })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <Row className="justify-content-center">

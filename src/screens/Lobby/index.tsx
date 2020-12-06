@@ -9,6 +9,8 @@ import {
 import UsersList from './UsersList'
 import UserModel from '../../models/UserModel'
 import useTodos from '../../hooks/useTodos'
+import { db, database } from '../../services'
+import { cleanup } from '@testing-library/react'
 type TParams = { id: string }
 
 interface Todos {
@@ -32,32 +34,57 @@ const LobbyScreen: React.FC = () => {
   const history = useHistory()
   const redirect = () => history.push('/game/' + id)
   const location = useLocation<ILocation>().state
-  let isCreator, user
+  const isCreator = location.isCreator
+  const user = location.user
 
-  const [isFetching, setFetching] = useState(false)
+  const [text, setText] = useState<string>()
   const [users, setUsers] = useState<UserModel[]>([])
 
   const [todos, setTodos] = useState<Todos[]>([])
   const getLobby = async () => {
     // to export
-    let r = await fetch(serverUrl + 'lobby/' + id) //serverUrl+id
+    let r = await fetch(serverUrl + 'lobby/' + id + '/users') //serverUrl+id
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
-    let users = await r.json()
-    setUsers(users)
-    if (users.length == 0) history.push('/join') // gérer tous les cas d'erreur
+    let lobby = await r.json()
+    let list = lobby[0].users
+    if (list.length == 0) history.push('/join') // gérer tous les cas d'erreur
+    setUsers([])
+    for (let i = 0; i < list.length; i++) {
+      let _user = await getUsers(list[i])
+      setUsers((users) => users.concat(_user))
+    }
+
+    const game = db.collection('Games').doc('aLjaHPcCvXrwPz1LIUai')
+    game.onSnapshot((doc) => {
+      if (doc && doc.exists) {
+        const data = doc.data()
+        setText(data?.started.toString())
+      }
+    })
+  }
+
+  const getUsers = async (_id: number) => {
+    let r = await fetch(serverUrl + 'users/' + _id)
+    let user = await r.json()
+    return user
   }
 
   useEffect(() => {
     //cas ou l'url est changée
     if (location == undefined || id == undefined) {
       history.push('/join')
-    } else {
-      isCreator = location.isCreator
-      user = location.user
     }
+    // else {
+    //   isCreator = location.isCreator
+    //   user = location.user
+    //   console.log(isCreator)
+    // }
     getLobby()
-  }, [id]) // add userlist
+    if (text?.toString() == 'false') {
+      history.push('/join')
+    }
+  }, [id, text]) // add userlist
   function start() {
     redirect()
   }
