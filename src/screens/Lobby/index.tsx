@@ -37,31 +37,49 @@ const LobbyScreen: React.FC = () => {
   const isCreator = location.isCreator
   const user = location.user
 
-  const [text, setText] = useState<string>()
+  const [gameStarted, setGameStarted] = useState<boolean>(false)
+  const [userId, setUserId] = useState<number[]>([])
   const [users, setUsers] = useState<UserModel[]>([])
 
-  const [todos, setTodos] = useState<Todos[]>([])
-  const getLobby = async () => {
+  const lobbys = db.collection('lobbys')
+  const _lobby = lobbys.where('lobby_id', '==', 13) //replace 13 by id
+
+  const game = db.collection('Games').doc('aLjaHPcCvXrwPz1LIUai')
+  const getLobby = () => {
     // to export
-    let r = await fetch(serverUrl + 'lobby/' + id + '/users') //serverUrl+id
+    // let r = await fetch(serverUrl + 'lobby/' + id + '/users') //serverUrl+id
     //.then((response) => response.json())
     //.then((data) => setTodos(data))
-    let lobby = await r.json()
-    let list = lobby[0].users
-    if (list.length == 0) history.push('/join') // gérer tous les cas d'erreur
-    setUsers([])
-    for (let i = 0; i < list.length; i++) {
-      let _user = await getUsers(list[i])
-      setUsers((users) => users.concat(_user))
-    }
+    // let lobby = await r.json()
+    // let list = lobby[0].users
+    //if (list.length == 0) history.push('/join') // gérer tous les cas d'erreur
 
-    const game = db.collection('Games').doc('aLjaHPcCvXrwPz1LIUai')
+    _lobby.onSnapshot((doc) => {
+      doc.docChanges().forEach((change) => {
+        let array: number[] = []
+        const users = change.doc.data().users
+        for (let j = 0; j < users.length; j++) {
+          array.push(users[j])
+        }
+        setUserId(array)
+      })
+    })
+
     game.onSnapshot((doc) => {
       if (doc && doc.exists) {
         const data = doc.data()
-        setText(data?.started.toString())
+        setGameStarted(data?.started)
       }
     })
+  }
+
+  const fetchtUsers = async () => {
+    let array: UserModel[] = []
+    for (let i = 0; i < userId.length; i++) {
+      let _user = await getUsers(userId[i])
+      array.push(_user)
+    }
+    setUsers(array)
   }
 
   const getUsers = async (_id: number) => {
@@ -81,12 +99,17 @@ const LobbyScreen: React.FC = () => {
     //   console.log(isCreator)
     // }
     getLobby()
-    if (text?.toString() == 'false') {
-      history.push('/join')
-    }
-  }, [id, text]) // add userlist
+  }, [id])
+
+  useEffect(() => {
+    fetchtUsers()
+  }, [userId])
+
+  useEffect(() => {
+    if (gameStarted) redirect()
+  }, [gameStarted])
   function start() {
-    redirect()
+    game.update({ started: true })
   }
   return (
     <Col>
