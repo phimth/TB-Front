@@ -61,7 +61,6 @@ const CreateScreen: React.FC<Props> = (props) => {
       body: JSON.stringify({ host: id }),
     }
     let r = await fetch(serverUrl + 'lobby-management/', requestOptions)
-
     let data = await r.json()
     return data
   }
@@ -70,7 +69,11 @@ const CreateScreen: React.FC<Props> = (props) => {
     try {
       const data = await createUser()
       const lobby = await createLobby(data.id)
-      history.push('lobby/' + lobby.id, { isCreator: true, user: data })
+      history.push('lobby/' + lobby.id, {
+        isCreator: true,
+        user: data,
+        lobby: lobby,
+      })
     } catch (error) {
       console.log(error)
     }

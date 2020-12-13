@@ -66,7 +66,11 @@ const JoinScreen: React.FC<Props> = (props) => {
     try {
       const data = await createUser()
       const lobby = await joinLobby(data.id)
-      history.push('lobby/' + lobby.id, { isCreator: false, user: data })
+      history.push('lobby/' + lobby.id, {
+        isCreator: false,
+        user: data,
+        lobby: lobby,
+      })
     } catch (error) {
       console.log(error)
     }

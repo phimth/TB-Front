@@ -12,21 +12,7 @@ const App = () => {
   const Login = lazy(() => import('./screens/Login'))
   const Join = lazy(() => import('./screens/Join'))
   const Create = lazy(() => import('./screens/Create'))
-  const [state, setState] = useState(GameStateModel.Home)
 
-  const [isCreator, setIsCreator] = useState(false)
-
-  function login(isCreator: boolean) {
-    setState(GameStateModel.Login)
-    setIsCreator(isCreator)
-  }
-
-  function join() {
-    setState(GameStateModel.Lobby)
-  }
-  function start() {
-    setState(GameStateModel.Game)
-  }
   return (
     <Switch>
       <Suspense fallback={<p>Loading page</p>}>
