@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { Row, ListGroup } from 'react-bootstrap'
 import UserModel from '../../models/UserModel'
 
 interface IProps {
@@ -14,7 +15,7 @@ interface Todos {
 
 const UserCard: FC<IProps> = (props) => {
   const { user } = props
-  return <div>{user.username}</div>
+  return <ListGroup.Item>{user.username}</ListGroup.Item>
 }
 
 export default UserCard

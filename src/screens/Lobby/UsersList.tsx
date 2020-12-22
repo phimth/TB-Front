@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { ListGroup } from 'react-bootstrap'
 import UserModel from '../../models/UserModel'
 import UserCard from './UserCard'
 
@@ -16,12 +17,12 @@ interface Todos {
 const UsersList: FC<IProps> = (props) => {
   const { users } = props
   return (
-    <ul>
+    <ListGroup>
       {users &&
         users.map((user) => {
           return <UserCard key={user.id} user={user} />
         })}
-    </ul>
+    </ListGroup>
   )
 }
 

@@ -1,3 +1,5 @@
+import CardModel from './CardModel'
+
 interface GameModel {
   game_id: number
   number_players: number
@@ -5,7 +7,7 @@ interface GameModel {
   round_number: number
   bomb_discovered: boolean
   player_turn_id: number
-  deck: []
+  deck: CardModel[]
   winners: []
   lobby_id: number
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   useParams,
@@ -6,7 +6,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom'
-import { isForOfStatement } from 'typescript'
+import { db, database } from '../../services'
 
 interface Props {
   isCreator: boolean
@@ -15,9 +15,11 @@ interface Props {
 
 const JoinScreen: React.FC<Props> = (props) => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
-  const [name, setName] = React.useState('')
+  const [name, setName] = useState('')
 
-  const [code, setCode] = React.useState('')
+  const [code, setCode] = useState('')
+
+  const [gameStarted, setGameStarted] = useState(false)
 
   const history = useHistory()
 
@@ -66,11 +68,24 @@ const JoinScreen: React.FC<Props> = (props) => {
     try {
       const data = await createUser()
       const lobby = await joinLobby(data.id)
-      history.push('lobby/' + lobby.id, {
-        isCreator: false,
-        user: data,
-        lobby: lobby,
-      })
+      var isActive
+      db.collection('games')
+        .where('game_id', '==', lobby.game[0])
+        .onSnapshot((doc) => {
+          doc.docChanges().forEach((change) => {
+            isActive = change.doc.data().is_game_started
+            if (!isActive) {
+              setGameStarted(false)
+              history.push('lobby/' + lobby.id, {
+                isCreator: false,
+                user: data,
+                lobby: lobby,
+              })
+            } else {
+              setGameStarted(true)
+            }
+          })
+        })
     } catch (error) {
       console.log(error)
     }
@@ -105,6 +120,11 @@ const JoinScreen: React.FC<Props> = (props) => {
         <Button variant="outline-secondary" type="submit">
           Join game
         </Button>
+        {gameStarted && (
+          <Row className="justify-content-center">
+            This game had already started.
+          </Row>
+        )}
       </Form>
     </Row>
   )

@@ -31,8 +31,6 @@ const LobbyScreen: React.FC = () => {
   var user = location.user
   var lobby_data = location.lobby
   const history = useHistory()
-  const redirect = () =>
-    history.push('/game/' + lobby_data.game[0], { user: user })
   const lobby_id: number = +id
   const lobby = db.collection('lobbys').where('lobby_id', '==', lobby_id) //get lobby query
   const game = db.collection('games').where('game_id', '==', lobby_data.game[0])
@@ -42,6 +40,8 @@ const LobbyScreen: React.FC = () => {
   const [gameDoc, setGameDoc] = useState<string>()
   const [userId, setUserId] = useState<number[]>([])
   const [users, setUsers] = useState<UserModel[]>([])
+  const redirect = () =>
+    history.push('/game/' + lobby_data.game[0], { user, gameDoc })
 
   const getLobby = () => {
     // to export
@@ -89,6 +89,7 @@ const LobbyScreen: React.FC = () => {
   }
 
   useEffect(() => {
+    let isActive = true
     //cas ou l'url est changée
     if (location == undefined || id == undefined) {
       history.push('/join')
@@ -101,14 +102,25 @@ const LobbyScreen: React.FC = () => {
       // // game = db.collection('Games').doc('aLjaHPcCvXrwPz1LIUai')
     }
     getLobby()
+    return () => {
+      isActive = false
+    }
   }, [id])
 
   useEffect(() => {
+    let isActive = true
     fetchtUsers()
+    return () => {
+      isActive = false
+    }
   }, [userId])
 
   useEffect(() => {
+    let isActive = true
     if (gameStarted) redirect()
+    return () => {
+      isActive = false
+    }
   }, [gameStarted])
 
   function start() {
@@ -141,8 +153,10 @@ const LobbyScreen: React.FC = () => {
           <Button variant="outline-secondary" onClick={start}>
             Start
           </Button>
+          <br></br>
         </Row>
       )}
+      <Row className="justify-content-center">Code du Lobby: {id}</Row>
     </Col>
   )
 }
