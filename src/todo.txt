@@ -14,3 +14,7 @@ joinRoom(){ /screens/join
     //add user to user_lobby
     //return validate
 }
+
+QUESTIONS
+
+définir pseudo lors de l'inscription ou lors de la création d'une game

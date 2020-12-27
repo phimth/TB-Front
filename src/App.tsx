@@ -12,6 +12,7 @@ const App = () => {
   const Login = lazy(() => import('./screens/Login'))
   const Join = lazy(() => import('./screens/Join'))
   const Create = lazy(() => import('./screens/Create'))
+  const SignUp = lazy(() => import('./screens/Signup'))
 
   return (
     <Switch>
@@ -22,6 +23,7 @@ const App = () => {
         <Route exact path="/login" component={Login} />
         <Route exact path="/join" component={Join} />
         <Route exact path="/create" component={Create} />
+        <Route exact path="/signup" component={SignUp} />
       </Suspense>
     </Switch>
   )

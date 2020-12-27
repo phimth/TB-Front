@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom'
 import UserModel from '../../models/UserModel'
 import useCreateUser from '../../hooks/use-create-user'
+import { auth } from '../../services/index'
+import { create } from 'domain'
 interface Props {
   isCreator: boolean
   join: () => void
@@ -36,7 +38,8 @@ const CreateScreen: React.FC<Props> = (props) => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      runCreate()
+      //runCreate()
+      create()
     }
     e.preventDefault()
     setValidated(true)
@@ -78,6 +81,10 @@ const CreateScreen: React.FC<Props> = (props) => {
       console.log(error)
     }
   }
+  useEffect(() => {
+    console.log(auth.currentUser?.email)
+  })
+  const create = () => {}
 
   return (
     <Row className="justify-content-center">

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import firebase from 'firebase'
+import React from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   useParams,
@@ -8,11 +9,13 @@ import {
 } from 'react-router-dom'
 import { auth } from '../../services/index'
 
-const LoginScreen = () => {
+const SignUpScreen = () => {
   const [validated, setValidated] = React.useState(false)
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
   const [error, setError] = React.useState<string>('')
+  const [pseudo, setPseudo] = React.useState<string>('')
+
   const history = useHistory()
 
   const handleSubmit = (e: {
@@ -25,26 +28,23 @@ const LoginScreen = () => {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      e.preventDefault()
-      login()
+      createUser()
     }
+    e.preventDefault()
     setValidated(true)
   }
 
-  const login = () => {
+  const createUser = () => {
     auth
-      .signInWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then((user) => {
+        user.user?.updateProfile({ displayName: pseudo })
         history.push('/')
       })
       .catch((error) => {
         var errorCode = error.code
         var errorMessage = error.message
-        if (errorCode === 'auth/wrong-password') {
-          setError('Wrong password.')
-        } else {
-          setError(errorMessage)
-        }
+        setError(errorMessage)
       })
   }
 
@@ -61,6 +61,19 @@ const LoginScreen = () => {
           />
           <Form.Control.Feedback type="invalid">
             Veuillez entrer votre email.
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group controlId="formBasicPseudo">
+          <Form.Label>Pseudo</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Pseudo"
+            onChange={(e) => setPseudo(e.target.value)}
+          />
+          <Form.Control.Feedback type="invalid">
+            Veuillez entrer votre pseudo
           </Form.Control.Feedback>
         </Form.Group>
 
@@ -87,4 +100,4 @@ const LoginScreen = () => {
   )
 }
 
-export default LoginScreen
+export default SignUpScreen
