@@ -36,15 +36,24 @@ const SignUpScreen = () => {
 
   const createUser = () => {
     auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((user) => {
-        user.user?.updateProfile({ displayName: pseudo })
-        history.push('/')
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        return auth
+          .createUserWithEmailAndPassword(email, password)
+          .then((user) => {
+            user.user?.updateProfile({ displayName: pseudo })
+            history.push('/')
+          })
+          .catch((error) => {
+            var errorCode = error.code
+            var errorMessage = error.message
+            setError(errorMessage)
+          })
       })
-      .catch((error) => {
+      .catch(function (error) {
+        // Handle Errors here.
         var errorCode = error.code
         var errorMessage = error.message
-        setError(errorMessage)
       })
   }
 
@@ -91,7 +100,7 @@ const SignUpScreen = () => {
         </Form.Group>
 
         <Button variant="outline-secondary" type="submit">
-          Log in
+          Register
         </Button>
         <br />
         {error}

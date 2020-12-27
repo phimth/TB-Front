@@ -1,8 +1,6 @@
 interface UserModel {
-  id: number
-  username: string
-  player: string
-  lobby: number
+  id: string
+  username: string | null
 }
 
 export default UserModel

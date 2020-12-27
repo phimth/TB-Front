@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import firebase from 'firebase'
+import React, { useState, useEffect } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
 import {
   useParams,
@@ -9,10 +10,10 @@ import {
 import { auth } from '../../services/index'
 
 const LoginScreen = () => {
-  const [validated, setValidated] = React.useState(false)
-  const [email, setEmail] = React.useState<string>('')
-  const [password, setPassword] = React.useState<string>('')
-  const [error, setError] = React.useState<string>('')
+  const [validated, setValidated] = useState(false)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [error, setError] = useState<string>('')
   const history = useHistory()
 
   const handleSubmit = (e: {
@@ -33,20 +34,36 @@ const LoginScreen = () => {
 
   const login = () => {
     auth
-      .signInWithEmailAndPassword(email, password)
-      .then((user) => {
-        history.push('/')
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(async () => {
+        return auth
+          .signInWithEmailAndPassword(email, password)
+          .then((user) => {
+            history.push('/')
+          })
+          .catch((error) => {
+            var errorCode = error.code
+            var errorMessage = error.message
+            if (errorCode === 'auth/wrong-password') {
+              setError('Wrong password.')
+            } else {
+              setError(errorMessage)
+            }
+          })
       })
-      .catch((error) => {
+      .catch(function (error) {
+        // Handle Errors here.
         var errorCode = error.code
         var errorMessage = error.message
-        if (errorCode === 'auth/wrong-password') {
-          setError('Wrong password.')
-        } else {
-          setError(errorMessage)
-        }
       })
   }
+
+  // useEffect(() => {
+  //   let isActive = true
+  //   return () => {
+  //     isActive = false
+  //   }
+  // })
 
   return (
     <Row className="justify-content-center">

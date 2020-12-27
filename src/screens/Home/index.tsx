@@ -44,10 +44,12 @@ const Home: FC = () => {
   }
 
   useEffect(() => {
-    if (auth.currentUser) {
-      setIsLogged(true)
-    }
-  })
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLogged(true)
+      }
+    })
+  }, [isLogged])
 
   return isLogged ? (
     <div className="">

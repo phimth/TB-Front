@@ -1,4 +1,4 @@
-import GameModel from 'models/GameModel'
+//import GameModel from 'models/GameModel'
 import UserModel from 'models/UserModel'
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
@@ -19,27 +19,27 @@ const GameScreen: React.FC = () => {
   const game_id: number = +id
   const location = useLocation<ILocation>().state
   const gameDoc = db.collection('games').where('game_id', '==', game_id)
-  const [game, setGame] = useState<GameModel>()
+  // const [game, setGame] = useState<GameModel>()
 
-  const runGame = () => {
-    gameDoc.onSnapshot((doc) => {
-      doc.docChanges().forEach((change) => {
-        let data: GameModel = change.doc.data() as GameModel
-        setGame(data)
-      })
-    })
-  }
+  // const runGame = () => {
+  //   gameDoc.onSnapshot((doc) => {
+  //     doc.docChanges().forEach((change) => {
+  //       let data: GameModel = change.doc.data() as GameModel
+  //       setGame(data)
+  //     })
+  //   })
+  // }
 
   useEffect(() => {
     let isActive = true
-    runGame()
+    // runGame()
     return () => {
       isActive = false
     }
   }, [id])
-  useEffect(() => {
-    console.log(game)
-  }, [game])
+  // useEffect(() => {
+  //   console.log(game)
+  // }, [game])
   return <Row className="justify-content-center">c Game</Row>
 }
 

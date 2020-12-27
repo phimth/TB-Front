@@ -1,9 +1,18 @@
-export interface LobbyModel {
-  lobby_id: number
-  players: number[]
+export interface ILobby {
+  //lobby_id: number
+  players: string[]
   max_players: number
-  host_id: number
-  game: number[]
+  host_id: string
+  game: string[]
 }
 
-export default LobbyModel
+// class Lobby implements ILobby {
+//   constructor() {
+//     players: string[];
+//     max_players: number;
+//     host_id: string;
+//     game: string[]
+//   }
+// }
+
+// export default Lobby
