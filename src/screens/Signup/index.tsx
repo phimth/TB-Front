@@ -1,20 +1,21 @@
 import firebase from 'firebase'
-import React from 'react'
-import { Button, Form, Container, Row, Col } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Container, Row, Col, Navbar } from 'react-bootstrap'
 import {
   useParams,
   RouteComponentProps,
   useHistory,
   useLocation,
 } from 'react-router-dom'
-import { auth } from '../../services/index'
+import { auth, db } from '../../services/index'
 
 const SignUpScreen = () => {
-  const [validated, setValidated] = React.useState(false)
-  const [email, setEmail] = React.useState<string>('')
-  const [password, setPassword] = React.useState<string>('')
-  const [error, setError] = React.useState<string>('')
-  const [pseudo, setPseudo] = React.useState<string>('')
+  const [validated, setValidated] = useState(false)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [error, setError] = useState<string>('')
+  const [pseudo, setPseudo] = useState<string>('')
+  const [change, setChange] = useState(false)
 
   const history = useHistory()
 
@@ -40,8 +41,14 @@ const SignUpScreen = () => {
       .then(() => {
         return auth
           .createUserWithEmailAndPassword(email, password)
-          .then((user) => {
-            user.user?.updateProfile({ displayName: pseudo })
+          .then(async (user) => {
+            await user.user?.updateProfile({ displayName: pseudo })
+            const player = await db
+              .collection('Players')
+              .doc(user.user?.uid)
+              .set({
+                username: user.user?.displayName,
+              })
             history.push('/')
           })
           .catch((error) => {
@@ -57,55 +64,73 @@ const SignUpScreen = () => {
       })
   }
 
+  useEffect(() => {
+    let isActive = true
+    return () => {
+      isActive = false
+    }
+  }, [change])
+
   return (
-    <Row className="justify-content-center">
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Veuillez entrer votre email.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group controlId="formBasicPseudo">
-          <Form.Label>Pseudo</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Pseudo"
-            onChange={(e) => setPseudo(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Veuillez entrer votre pseudo
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Veuillez entrer un mot de passe.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Button variant="outline-secondary" type="submit">
-          Register
+    <div className="">
+      <Navbar className="justify-content-center">
+        <Button
+          variant="outline-dark"
+          size="lg"
+          onClick={() => history.push('/')}
+        >
+          TimeBomb
         </Button>
-        <br />
-        {error}
-      </Form>
-    </Row>
+      </Navbar>
+      <Row className="justify-content-center">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Enter Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Veuillez entrer votre email.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group controlId="formBasicPseudo">
+            <Form.Label>Pseudo</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Pseudo"
+              onChange={(e) => setPseudo(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Veuillez entrer votre pseudo
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Veuillez entrer un mot de passe.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Button variant="outline-secondary" type="submit">
+            Register
+          </Button>
+          <br />
+          {error}
+        </Form>
+      </Row>
+    </div>
   )
 }
 

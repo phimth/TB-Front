@@ -11,7 +11,6 @@ import UserModel from '../../models/UserModel'
 //import LobbyModel from '../../models/LobbyModel'
 import useTodos from '../../hooks/useTodos'
 import { db, database, auth } from '../../services'
-import { cleanup } from '@testing-library/react'
 import firebase from 'firebase'
 
 interface Params {
@@ -26,20 +25,20 @@ const LobbyScreen: React.FC = () => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
   const id = useParams<Params>().id
   const location = useLocation<ILocation>().state
-  var isCreator = location.isCreator
-  var code = location.code
+  //const [isCreator, setIsCreator] = useState<boolean>()
+  const isCreator = location.isCreator
+  const code = id.slice(0, 6).toUpperCase()
   const history = useHistory()
   const lobby = db.collection('Lobbys').where('lobby_id', '==', code)
   const game = db.collection('Games').where('game_id', '==', code)
+  const [user, setUser] = useState<UserModel>()
 
   const [change, setChange] = useState(false)
 
   const [gameStarted, setGameStarted] = useState<boolean>(false)
   const [userId, setUserId] = useState<string[]>([])
-  const [gameId, setGameId] = useState<string>()
-  const [lobbyId, setLobbyId] = useState<string>()
   const [users, setUsers] = useState<UserModel[]>([])
-  const redirect = () => history.push('/game/' + gameId)
+  const redirect = () => history.push('/game/' + id, { isCreator, code })
 
   const getLobby = () => {
     // to export
@@ -56,14 +55,12 @@ const LobbyScreen: React.FC = () => {
         for (let j = 0; j < users.length; j++) {
           array.push(users[j])
         }
-        setLobbyId(change.doc.id)
         setUserId(array)
       })
     })
     game.onSnapshot((doc) => {
       doc.docChanges().forEach((change) => {
         const data = change.doc.data()
-        setGameId(change.doc.id)
         setGameStarted(data.is_game_started)
       })
     })
@@ -106,6 +103,7 @@ const LobbyScreen: React.FC = () => {
   useEffect(() => {
     let isActive = true
     fetchtUsers()
+
     return () => {
       isActive = false
     }
@@ -122,15 +120,72 @@ const LobbyScreen: React.FC = () => {
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
+        // db.collection('Lobbys') //safe way pour set le createur
+        //   .doc(id)
+        //   .get()
+        //   .then((doc) => {
+        //     if (doc.exists) {
+        //       if (doc.data()?.host_id == user.uid) {
+        //         setIsCreator(true)
+        //       }
+        //     }
+        //   })
+        var userStatusDatabaseRef = firebase
+          .database()
+          .ref('/status/' + user.uid)
+        var userStatusFirestoreRef = firebase
+          .firestore()
+          .doc('/status/' + user.uid)
+        var isOfflineForDatabase = {
+          state: 'offline',
+          last_changed: firebase.database.ServerValue.TIMESTAMP,
+        }
+
+        var isOnlineForDatabase = {
+          state: 'online',
+          last_changed: firebase.database.ServerValue.TIMESTAMP,
+        }
+        var isOfflineForFirestore = {
+          state: 'offline',
+          last_changed: firebase.firestore.FieldValue.serverTimestamp(),
+        }
+
+        var isOnlineForFirestore = {
+          state: 'online',
+          last_changed: firebase.firestore.FieldValue.serverTimestamp(),
+        }
+        firebase
+          .database()
+          .ref('.info/connected')
+          .on('value', function (snapshot) {
+            // If we're not currently connected, don't do anything.
+            if (snapshot.val() == false) {
+              userStatusFirestoreRef.set(isOfflineForFirestore)
+              return
+            }
+            // If we are currently connected, then use the 'onDisconnect()'
+            // method to add a set which will only trigger once this
+            // client has disconnected by closing the app,
+            // losing internet, or any other means.
+            userStatusDatabaseRef
+              .onDisconnect()
+              .set(isOfflineForDatabase)
+              .then(function () {
+                userStatusDatabaseRef.set(isOnlineForDatabase)
+                userStatusFirestoreRef.set(isOnlineForFirestore)
+              })
+          })
+        setUser({ id: user.uid, username: user.displayName })
       } else {
-        db.collection('Lobbys').doc(lobbyId).update({})
         history.push('/login')
       }
     })
   }, [change])
 
+  //useEffect(() => {}, [user])
+
   function start() {
-    db.collection('Games').doc(gameId).update({ is_game_started: true })
+    db.collection('Games').doc(id).update({ is_game_started: true })
   }
 
   const startGame = async (game_id: number) => {

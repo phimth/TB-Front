@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Form, Container, Row, Col } from 'react-bootstrap'
+import { Button, Form, Container, Row, Col, Navbar } from 'react-bootstrap'
 import {
   useParams,
   RouteComponentProps,
@@ -75,28 +75,20 @@ const CreateScreen: React.FC = () => {
   }
 
   const create = async () => {
-    const player = await db.collection('Players').add({
-      id: host?.id.slice(0, 6),
-      username: host?.username,
-    })
-
     const res = await db.collection('Lobbys').add({
       host_id: host?.id,
-      users: [player.id],
+      users: [host?.id],
       max_players: numberPlayers,
     })
 
     const code = res.id.slice(0, 6).toUpperCase()
 
-    const game = await db.collection('Games').add({
+    await db.collection('Games').doc(res.id).set({
       is_game_started: false,
       game_id: code,
     })
 
-    await db
-      .collection('Lobbys')
-      .doc(res.id)
-      .update({ lobby_id: code, games: [game.id] })
+    await db.collection('Lobbys').doc(res.id).update({ lobby_id: code })
 
     history.push('/lobby/' + res.id, {
       isCreator: true,
@@ -115,28 +107,42 @@ const CreateScreen: React.FC = () => {
   }, [change])
 
   return (
-    <Row className="justify-content-center">
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label>Number of players max</Form.Label>
-          <Form.Control
-            as="select"
-            defaultValue="4"
-            onChange={(e) => setNumberPlayers(e.target.value)}
-          >
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-          </Form.Control>
-        </Form.Group>
-
-        <Button variant="outline-secondary" type="submit">
-          Create game
+    <div className="">
+      <Navbar className="justify-content-center">
+        <Button
+          variant="outline-dark"
+          size="lg"
+          onClick={() => history.push('/')}
+        >
+          TimeBomb
         </Button>
-      </Form>
-    </Row>
+        <Navbar.Text className="justify-content-end">
+          Hi {host?.username}
+        </Navbar.Text>
+      </Navbar>
+      <Row className="justify-content-center">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form.Group controlId="exampleForm.ControlSelect1">
+            <Form.Label>Number of players max</Form.Label>
+            <Form.Control
+              as="select"
+              defaultValue="4"
+              onChange={(e) => setNumberPlayers(e.target.value)}
+            >
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </Form.Control>
+          </Form.Group>
+
+          <Button variant="outline-secondary" type="submit">
+            Create game
+          </Button>
+        </Form>
+      </Row>
+    </div>
   )
 }
 

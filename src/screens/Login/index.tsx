@@ -1,6 +1,6 @@
 import firebase from 'firebase'
 import React, { useState, useEffect } from 'react'
-import { Button, Form, Container, Row, Col } from 'react-bootstrap'
+import { Button, Form, Container, Row, Col, Navbar } from 'react-bootstrap'
 import {
   useParams,
   RouteComponentProps,
@@ -14,6 +14,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [change, setChange] = useState(false)
   const history = useHistory()
 
   const handleSubmit = (e: {
@@ -58,49 +59,60 @@ const LoginScreen = () => {
       })
   }
 
-  // useEffect(() => {
-  //   let isActive = true
-  //   return () => {
-  //     isActive = false
-  //   }
-  // })
+  useEffect(() => {
+    let isActive = true
+    return () => {
+      isActive = false
+    }
+  }, [change])
 
   return (
-    <Row className="justify-content-center">
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Veuillez entrer votre email.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Veuillez entrer un mot de passe.
-          </Form.Control.Feedback>
-        </Form.Group>
-
-        <Button variant="outline-secondary" type="submit">
-          Log in
+    <div className="">
+      <Navbar className="justify-content-center">
+        <Button
+          variant="outline-dark"
+          size="lg"
+          onClick={() => history.push('/')}
+        >
+          TimeBomb
         </Button>
-        <br />
-        {error}
-      </Form>
-    </Row>
+      </Navbar>
+      <Row className="justify-content-center">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Enter Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Veuillez entrer votre email.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Veuillez entrer un mot de passe.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Button variant="outline-secondary" type="submit">
+            Log in
+          </Button>
+          <br />
+          {error}
+        </Form>
+      </Row>
+    </div>
   )
 }
 

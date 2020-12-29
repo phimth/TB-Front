@@ -1,19 +1,8 @@
-Liste de Lobbys -> ajouter un champ nom pour LobbyModel
+TODO
 
-createRoom(){ /screens/Create
-    //vérifier si user n'est pas déjà host
-    //générer id qui n'existe pas
-    //créer lobby avec cet id
-    //update user's lobby_id
-    //return lobby_id
-}
+-gérer la fermeture des onglets
 
-joinRoom(){ /screens/join
-    //create new user with name
-    //vérifier que user n'est pas deja dans le lobby
-    //add user to user_lobby
-    //return validate
-}
+-initialiser autres parametres de la game quand start
 
 QUESTIONS
 

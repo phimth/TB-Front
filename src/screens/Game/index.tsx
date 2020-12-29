@@ -2,23 +2,25 @@
 import UserModel from 'models/UserModel'
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Container, Row, Col } from 'react-bootstrap'
-import { useParams, useLocation } from 'react-router-dom'
-import { db } from 'services'
+import { useParams, useLocation, useHistory } from 'react-router-dom'
+import { auth, db } from 'services'
 interface Params {
   id: string
 }
 
 interface ILocation {
-  user: UserModel
-  gameDoc: string
+  isCreator: boolean
+  code: string
 }
 const GameScreen: React.FC = () => {
   const serverUrl = process.env.REACT_APP_SERVER_URL
   const game_engine = process.env.REACT_APP_GAME_ENGINE
-  const id = useParams<Params>().id
-  const game_id: number = +id
+  const [change, setChange] = useState(false)
+  const history = useHistory()
   const location = useLocation<ILocation>().state
-  const gameDoc = db.collection('games').where('game_id', '==', game_id)
+  var isCreator = location.isCreator
+  var code = location.code
+  const gameDoc = db.collection('games').where('game_id', '==', code)
   // const [game, setGame] = useState<GameModel>()
 
   // const runGame = () => {
@@ -36,10 +38,16 @@ const GameScreen: React.FC = () => {
     return () => {
       isActive = false
     }
-  }, [id])
-  // useEffect(() => {
-  //   console.log(game)
-  // }, [game])
+  })
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+      } else {
+        history.push('/login')
+      }
+    })
+  }, [change])
   return <Row className="justify-content-center">c Game</Row>
 }
 

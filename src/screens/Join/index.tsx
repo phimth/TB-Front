@@ -1,6 +1,6 @@
 import UserModel from 'models/UserModel'
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Container, Row, Col } from 'react-bootstrap'
+import { Button, Form, Container, Row, Col, Navbar } from 'react-bootstrap'
 import {
   useParams,
   RouteComponentProps,
@@ -129,7 +129,7 @@ const JoinScreen: React.FC<Props> = (props) => {
 
   const canJoin = async () => {
     const player = await db.collection('Players').add({
-      id: user?.id.slice(0, 6),
+      id: user?.id,
       username: user?.username,
     })
 
@@ -141,7 +141,7 @@ const JoinScreen: React.FC<Props> = (props) => {
       })
 
     history.push('/lobby/' + lobby, {
-      isCreator: true,
+      isCreator: false,
       code: code,
     })
   }
@@ -162,31 +162,52 @@ const JoinScreen: React.FC<Props> = (props) => {
     }
   }, [lobby])
 
-  return (
-    <Row className="justify-content-center">
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group controlId="codeId">
-          <Form.Control
-            required
-            type="text"
-            placeholder="Code du Lobby"
-            onChange={(e) => setCode(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Veuillez entrer un code de lobby.
-          </Form.Control.Feedback>
-        </Form.Group>
+  useEffect(() => {
+    let isActive = true
+    return () => {
+      isActive = false
+    }
+  }, [change])
 
-        <Button variant="outline-secondary" type="submit">
-          Join game
+  return (
+    <div className="">
+      <Navbar className="justify-content-center">
+        <Button
+          variant="outline-dark"
+          size="lg"
+          onClick={() => history.push('/')}
+        >
+          TimeBomb
         </Button>
-        {gameStarted && (
-          <Row className="justify-content-center">
-            This game had already started.
-          </Row>
-        )}
-      </Form>
-    </Row>
+        <Navbar.Text className="justify-content-end">
+          Hi {user?.username}
+        </Navbar.Text>
+      </Navbar>
+      <Row className="justify-content-center">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form.Group controlId="codeId">
+            <Form.Control
+              required
+              type="text"
+              placeholder="Code du Lobby"
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Veuillez entrer un code de lobby.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Button variant="outline-secondary" type="submit">
+            Join game
+          </Button>
+          {gameStarted && (
+            <Row className="justify-content-center">
+              This game had already started.
+            </Row>
+          )}
+        </Form>
+      </Row>
+    </div>
   )
 }
 
