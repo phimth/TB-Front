@@ -1,7 +1,6 @@
 interface CardModel {
   card_id: number
-  type_id: number
-  name: string
+  type: string
   hidden: boolean
 }
 

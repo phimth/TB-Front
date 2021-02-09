@@ -86,6 +86,7 @@ const CreateScreen: React.FC = () => {
     await db.collection('Games').doc(res.id).set({
       is_game_started: false,
       game_id: code,
+      lobby_id: res.id,
     })
 
     await db.collection('Lobbys').doc(res.id).update({ lobby_id: code })

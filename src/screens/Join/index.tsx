@@ -7,7 +7,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom'
-import { db, database, auth } from '../../services'
+import { db, data, auth } from '../../services'
 import firebase from 'firebase'
 
 interface Props {
@@ -55,9 +55,9 @@ const JoinScreen: React.FC<Props> = (props) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: name }),
     }
-    let r = await fetch(serverUrl + 'users/', requestOptions)
+    const r = await fetch(serverUrl + 'users/', requestOptions)
 
-    let data = await r.json()
+    const data = await r.json()
     return data
   }
 
@@ -68,8 +68,11 @@ const JoinScreen: React.FC<Props> = (props) => {
       body: JSON.stringify({ user: id }),
     }
 
-    let r = await fetch(serverUrl + 'lobby/' + code + '/users', requestOptions)
-    let data = await r.json()
+    const r = await fetch(
+      serverUrl + 'lobby/' + code + '/users',
+      requestOptions
+    )
+    const data = await r.json()
     return data
   }
 
@@ -77,7 +80,7 @@ const JoinScreen: React.FC<Props> = (props) => {
     try {
       const data = await createUser()
       const lobby = await joinLobby(data.id)
-      var isActive
+      let isActive
       db.collection('games')
         .where('game_id', '==', lobby.game[0])
         .onSnapshot((doc) => {
@@ -101,7 +104,7 @@ const JoinScreen: React.FC<Props> = (props) => {
   }
 
   const join = async () => {
-    var isActive
+    let isActive
     db.collection('Games')
       .where('game_id', '==', code)
       .onSnapshot((doc) => {
@@ -128,16 +131,16 @@ const JoinScreen: React.FC<Props> = (props) => {
   }
 
   const canJoin = async () => {
-    const player = await db.collection('Players').add({
-      id: user?.id,
-      username: user?.username,
-    })
+    // const player = await db.collection('Players').add({
+    //   id: user?.id,
+    //   username: user?.username,
+    // })
 
     await db
       .collection('Lobbys')
       .doc(lobby)
       .update({
-        users: firebase.firestore.FieldValue.arrayUnion(player.id),
+        users: firebase.firestore.FieldValue.arrayUnion(user?.id),
       })
 
     history.push('/lobby/' + lobby, {

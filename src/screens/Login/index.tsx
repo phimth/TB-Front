@@ -43,8 +43,8 @@ const LoginScreen = () => {
             history.push('/')
           })
           .catch((error) => {
-            var errorCode = error.code
-            var errorMessage = error.message
+            const errorCode = error.code
+            const errorMessage = error.message
             if (errorCode === 'auth/wrong-password') {
               setError('Wrong password.')
             } else {
@@ -54,8 +54,8 @@ const LoginScreen = () => {
       })
       .catch(function (error) {
         // Handle Errors here.
-        var errorCode = error.code
-        var errorMessage = error.message
+        const errorCode = error.code
+        const errorMessage = error.message
       })
   }
 

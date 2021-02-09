@@ -18,8 +18,8 @@ const GameScreen: React.FC = () => {
   const [change, setChange] = useState(false)
   const history = useHistory()
   const location = useLocation<ILocation>().state
-  var isCreator = location.isCreator
-  var code = location.code
+  const isCreator = location.isCreator
+  const code = location.code
   const gameDoc = db.collection('games').where('game_id', '==', code)
   // const [game, setGame] = useState<GameModel>()
 

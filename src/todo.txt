@@ -1,8 +1,12 @@
 TODO
 
--gérer la fermeture des onglets
+-gérer la présence(quitter le lobby, changer d'onglet, etc)
 
 -initialiser autres parametres de la game quand start
+
+- gérer le nombre max de joueurs lors du join
+
+- initialiser autres parametres players quand la game start
 
 QUESTIONS
 

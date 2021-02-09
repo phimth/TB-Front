@@ -11,6 +11,7 @@ import {
 import { auth } from '../../services/index'
 import GameStateModel from '../../models/GameStateModel'
 import UserModel from 'models/UserModel'
+import firebase from 'firebase'
 
 const Home: FC = () => {
   const [isLogged, setIsLogged] = useState<boolean>(false)
@@ -23,7 +24,8 @@ const Home: FC = () => {
   }
 
   function logout() {
-    auth
+    firebase
+      .auth()
       .signOut()
       .then(() => {
         setIsLogged(false)

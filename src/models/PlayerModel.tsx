@@ -1,8 +1,10 @@
+import CardModel from './CardModel'
+
 interface PlayerModel {
-  player_id: number
-  role_id?: number
-  hand: []
-  announced: []
+  player_id: string
+  role: string
+  hand: CardModel[]
+  announced: CardModel[]
 }
 
 export default PlayerModel

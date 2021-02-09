@@ -10,8 +10,10 @@ import UsersList from './UsersList'
 import UserModel from '../../models/UserModel'
 //import LobbyModel from '../../models/LobbyModel'
 import useTodos from '../../hooks/useTodos'
-import { db, database, auth } from '../../services'
+import { db, auth } from '../../services'
 import firebase from 'firebase'
+import Presence from 'hooks/presence'
+import * as GameFactory from '../../factory/Game'
 
 interface Params {
   id: string
@@ -50,7 +52,7 @@ const LobbyScreen: React.FC = () => {
     //if (list.length == 0) history.push('/join') // gérer tous les cas d'erreur
     lobby.onSnapshot((doc) => {
       doc.docChanges().forEach((change) => {
-        let array: string[] = []
+        const array: string[] = []
         const users = change.doc.data().users
         for (let j = 0; j < users.length; j++) {
           array.push(users[j])
@@ -67,9 +69,9 @@ const LobbyScreen: React.FC = () => {
   }
 
   const fetchtUsers = async () => {
-    let array: UserModel[] = []
+    const array: UserModel[] = []
     for (let i = 0; i < userId.length; i++) {
-      let _user = await getUsers(userId[i])
+      const _user = await getUsers(userId[i])
       array.push(_user)
     }
     setUsers(array)
@@ -130,51 +132,7 @@ const LobbyScreen: React.FC = () => {
         //       }
         //     }
         //   })
-        var userStatusDatabaseRef = firebase
-          .database()
-          .ref('/status/' + user.uid)
-        var userStatusFirestoreRef = firebase
-          .firestore()
-          .doc('/status/' + user.uid)
-        var isOfflineForDatabase = {
-          state: 'offline',
-          last_changed: firebase.database.ServerValue.TIMESTAMP,
-        }
-
-        var isOnlineForDatabase = {
-          state: 'online',
-          last_changed: firebase.database.ServerValue.TIMESTAMP,
-        }
-        var isOfflineForFirestore = {
-          state: 'offline',
-          last_changed: firebase.firestore.FieldValue.serverTimestamp(),
-        }
-
-        var isOnlineForFirestore = {
-          state: 'online',
-          last_changed: firebase.firestore.FieldValue.serverTimestamp(),
-        }
-        firebase
-          .database()
-          .ref('.info/connected')
-          .on('value', function (snapshot) {
-            // If we're not currently connected, don't do anything.
-            if (snapshot.val() == false) {
-              userStatusFirestoreRef.set(isOfflineForFirestore)
-              return
-            }
-            // If we are currently connected, then use the 'onDisconnect()'
-            // method to add a set which will only trigger once this
-            // client has disconnected by closing the app,
-            // losing internet, or any other means.
-            userStatusDatabaseRef
-              .onDisconnect()
-              .set(isOfflineForDatabase)
-              .then(function () {
-                userStatusDatabaseRef.set(isOnlineForDatabase)
-                userStatusFirestoreRef.set(isOnlineForFirestore)
-              })
-          })
+        Presence(user.uid)
         setUser({ id: user.uid, username: user.displayName })
       } else {
         history.push('/login')
@@ -185,7 +143,32 @@ const LobbyScreen: React.FC = () => {
   //useEffect(() => {}, [user])
 
   function start() {
-    db.collection('Games').doc(id).update({ is_game_started: true })
+    const start = GameFactory.createGame(userId.length, userId)
+    const array = start.deck.map((obj) => {
+      return Object.assign({}, obj)
+    })
+    const array_players = start.players.map((obj) => {
+      return Object.assign({}, obj)
+    })
+    for (let i = 0; i < array_players.length; i++) {
+      console.log(array_players[i])
+      db.collection('Players').doc(array_players[i].player_id).update({
+        role: array_players[i].role,
+        hand: array_players[i].hand,
+        announced: array_players[i].announced,
+      })
+    }
+    db.collection('Games').doc(id).update({
+      is_game_started: true,
+      is_game_over: false,
+      number_players: userId.length,
+      players: userId,
+      number_cables_discovered: 0,
+      round_number: 1,
+      is_bomb_discovered: false,
+      player_turn_id: start.player_turn_id,
+      deck: array,
+    })
   }
 
   const startGame = async (game_id: number) => {
