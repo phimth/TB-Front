@@ -1,19 +1,21 @@
 import CardModel from './CardModel'
+import PlayerModel from './PlayerModel'
 
-interface IGame {
-  //game_id: number
+interface GameModel {
+  game_id: string
   number_players: number
   number_cables_discovered: number
   round_number: number
-  bomb_discovered: boolean
+  is_bomb_discovered: boolean
+  is_game_over: boolean
   player_turn_id: string
   deck: CardModel[]
   winners: []
+  players: PlayerModel[]
   lobby_id: string
 }
 
 // class GameModel implements IGame {
-//   constructor() {}
 //   number_players: number
 //   number_cables_discovered: number
 //   round_number: number
@@ -24,4 +26,4 @@ interface IGame {
 //   lobby_id: number
 // }
 
-// export default GameModel
+export default GameModel

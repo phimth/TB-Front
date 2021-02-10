@@ -2,12 +2,17 @@ TODO
 
 -gérer la présence(quitter le lobby, changer d'onglet, etc)
 
--initialiser autres parametres de la game quand start
-
 - gérer le nombre max de joueurs lors du join
-
-- initialiser autres parametres players quand la game start
 
 QUESTIONS
 
-définir pseudo lors de l'inscription ou lors de la création d'une game
+TODO :
+- récuperer données pour affichage : liste players, 
+- coder la phase de jeu (boucle)
+- ui : liste des joueurs avec nom au dessus et
+ main (hidden) en dessous et announced encore en dessous
+ + text field pour annoncer main encore en dessous 
+- implémenter can click or not selon tour du joueur
+
+TO DEPLOY
+- perssitance login/signup : session -> local

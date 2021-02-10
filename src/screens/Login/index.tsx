@@ -35,7 +35,7 @@ const LoginScreen = () => {
 
   const login = () => {
     auth
-      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
       .then(async () => {
         return auth
           .signInWithEmailAndPassword(email, password)

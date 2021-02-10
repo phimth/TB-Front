@@ -40,7 +40,7 @@ const LobbyScreen: React.FC = () => {
   const [gameStarted, setGameStarted] = useState<boolean>(false)
   const [userId, setUserId] = useState<string[]>([])
   const [users, setUsers] = useState<UserModel[]>([])
-  const redirect = () => history.push('/game/' + id, { isCreator, code })
+  const redirect = () => history.push('/game/' + id, { isCreator, code, user })
 
   const getLobby = () => {
     // to export
@@ -68,7 +68,7 @@ const LobbyScreen: React.FC = () => {
     })
   }
 
-  const fetchtUsers = async () => {
+  const fetchUsers = async () => {
     const array: UserModel[] = []
     for (let i = 0; i < userId.length; i++) {
       const _user = await getUsers(userId[i])
@@ -104,7 +104,7 @@ const LobbyScreen: React.FC = () => {
 
   useEffect(() => {
     let isActive = true
-    fetchtUsers()
+    fetchUsers()
 
     return () => {
       isActive = false

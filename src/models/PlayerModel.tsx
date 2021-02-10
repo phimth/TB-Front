@@ -4,7 +4,8 @@ interface PlayerModel {
   player_id: string
   role: string
   hand: CardModel[]
-  announced: CardModel[]
+  announced: any[]
+  username: string
 }
 
 export default PlayerModel
