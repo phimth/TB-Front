@@ -1,8 +1,11 @@
-export enum GameStateModel {
-  Home,
-  Login,
-  Lobby,
-  Game,
+enum GameStateModel {
+  Start,
+  Checkwin,
+  Distribute,
+  Memorize,
+  Hide,
+  Declaration,
+  Cut,
 }
 
 export default GameStateModel

@@ -6,13 +6,13 @@ TODO
 
 QUESTIONS
 
-TODO :
-- récuperer données pour affichage : liste players, 
+TODO : 
 - coder la phase de jeu (boucle)
 - ui : liste des joueurs avec nom au dessus et
  main (hidden) en dessous et announced encore en dessous
- + text field pour annoncer main encore en dessous 
+ + text field postion fixe pour annoncer main encore en dessous 
 - implémenter can click or not selon tour du joueur
+- assets cartes et roles
 
 TO DEPLOY
-- perssitance login/signup : session -> local
+- persistance login/signup : session -> local

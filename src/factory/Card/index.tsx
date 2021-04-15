@@ -10,7 +10,7 @@ export class CardFactory implements CardModel {
   constructor(id: number, type: string) {
     this.card_id = id
     this.type = type
-    this.hidden = true
+    this.hidden = false
   }
 }
 

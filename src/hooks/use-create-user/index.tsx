@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import UserModel from '../../models/UserModel'
 
 interface Output {
   createUser: () => void

@@ -47,7 +47,7 @@ const SignUpScreen = () => {
               .collection('Players')
               .doc(user.user?.uid)
               .set({
-                player_id: user.user?.uid,
+                id: user.user?.uid,
                 username: user.user?.displayName,
               })
             history.push('/')

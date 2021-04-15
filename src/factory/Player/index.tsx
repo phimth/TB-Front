@@ -2,18 +2,18 @@ import CardModel from 'models/CardModel'
 import PlayerModel from 'models/PlayerModel'
 
 export class PlayerFactory implements PlayerModel {
-  player_id: string
+  id: string
   role: string
   hand: CardModel[]
-  announced: any[]
+  announced: { defusers: number; bomb: boolean }
 
   username: string
 
   constructor(id: string, role: string) {
-    this.player_id = id
+    this.id = id
     this.role = role
     this.hand = []
-    this.announced = [{ bomb: false }, { defusers: 0 }]
+    this.announced = { bomb: false, defusers: 0 }
     this.username = ''
   }
 }

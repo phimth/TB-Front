@@ -21,10 +21,10 @@ export class GameFactory {
   initializeDeck(number: number) {
     let deck: CardModel[] = []
     if (number == 1) {
-      deck = DeckFactory.createDeck(5, 2).cards
+      deck = DeckFactory.createDeck(3, 1).cards
     }
     if (number == 2) {
-      deck = DeckFactory.createDeck(9, 3).cards
+      deck = DeckFactory.createDeck(7, 2).cards
     }
     if (number == 4) {
       deck = DeckFactory.createDeck(15, 4).cards

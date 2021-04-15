@@ -1,10 +1,10 @@
 import CardModel from './CardModel'
 
 interface PlayerModel {
-  player_id: string
+  id: string
   role: string
   hand: CardModel[]
-  announced: any[]
+  announced: { defusers: number; bomb: boolean }
   username: string
 }
 

@@ -151,8 +151,7 @@ const LobbyScreen: React.FC = () => {
       return Object.assign({}, obj)
     })
     for (let i = 0; i < array_players.length; i++) {
-      console.log(array_players[i])
-      db.collection('Players').doc(array_players[i].player_id).update({
+      db.collection('Players').doc(array_players[i].id).update({
         role: array_players[i].role,
         hand: array_players[i].hand,
         announced: array_players[i].announced,
@@ -167,7 +166,7 @@ const LobbyScreen: React.FC = () => {
       round_number: 1,
       is_bomb_discovered: false,
       player_turn_id: start.player_turn_id,
-      deck: array,
+      //deck: array,
     })
   }
 

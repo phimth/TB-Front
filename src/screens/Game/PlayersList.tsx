@@ -5,15 +5,20 @@ import PlayerCard from './PlayerCard'
 
 interface IProps {
   players: PlayerModel[]
+  id: string | undefined
 }
 
 const PlayersList: FC<IProps> = (props) => {
-  const { players } = props
+  const { id, players } = props
   return (
     <ListGroup>
       {players &&
         players.map((player) => {
-          return <PlayerCard key={player.player_id} player={player} />
+          let self = false
+          if (player.id == id) {
+            self = true
+          }
+          return <PlayerCard key={player.id} player={player} self={self} />
         })}
     </ListGroup>
   )

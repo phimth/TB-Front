@@ -4,7 +4,6 @@ import UserModel from '../../models/UserModel'
 
 interface IProps {
   user: UserModel
-  key: string
 }
 
 interface Todos {
@@ -15,10 +14,10 @@ interface Todos {
 }
 
 const UserCard: FC<IProps> = (props) => {
-  const { key, user } = props
+  const { user } = props
   return (
     <Row>
-      <ListGroup.Item key={key}>{user.username}</ListGroup.Item>
+      <ListGroup.Item>{user.username}</ListGroup.Item>
     </Row>
   )
 }
