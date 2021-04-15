@@ -147,8 +147,8 @@ const GameScreen: React.FC = () => {
   }, [playerId])
 
   useEffect(() => {
-    if (empty && players.length > 1) createDeck(playerId)
-  }, [empty, players])
+    if (empty && players.length > 1 && player) createDeck(playerId)
+  }, [empty, players, player])
 
   useEffect(() => {
     if (game && !empty) {

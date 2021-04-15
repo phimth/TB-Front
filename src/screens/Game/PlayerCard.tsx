@@ -11,6 +11,7 @@ interface IProps {
 
 const PlayerCard: FC<IProps> = (props) => {
   const { self, player } = props
+  //console.log(self)
   return (
     <Row>
       <Col>
