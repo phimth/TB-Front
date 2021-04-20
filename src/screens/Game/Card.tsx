@@ -14,8 +14,8 @@ interface IProps {
 const PlayerCard: FC<IProps> = (props) => {
   const { type, hidden, self } = props
   let card
-  if (!self && !hidden) {
-    card = cable
+  if (!self || hidden) {
+    card = cable // remplacer par verso
   } else if (type == 'bomb') {
     card = bomb
   } else if (type == 'cable') {

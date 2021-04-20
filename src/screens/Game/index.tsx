@@ -38,7 +38,7 @@ const GameScreen: React.FC = () => {
   const [turn, setTurn] = useState<PlayerModel>()
   const [isOver, setIsOver] = useState<boolean>(false)
   const [gameState, setGameState] = useState<GameStateModel>(
-    GameStateModel.Start
+    GameStateModel.Init
   )
   const [empty, setEmpty] = useState<boolean>(true)
 
@@ -97,24 +97,24 @@ const GameScreen: React.FC = () => {
     setPlayer(player.data() as PlayerModel)
   }
 
-  const startRound = async () => {
-    switch (gameState) {
-      case GameStateModel.Checkwin:
-        if (game)
-          if (game.deck.length > 1) setGameState(GameStateModel.Distribute)
-        break
-      case GameStateModel.Distribute:
-        await distribute()
-        break
-      case GameStateModel.Memorize:
-        break
-      case GameStateModel.Hide:
-        break
-      case GameStateModel.Declaration:
-        break
-      case GameStateModel.Cut:
-        break
+  const shuffleArray = (array: any[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
     }
+  }
+
+  const hideAll = async () => {
+    for (let i = 0; i < players.length; i++) {
+      shuffleArray(players[i].hand)
+      for (let j = 0; j < players[i].hand.length; j++) {
+        players[i].hand[j].hidden = true
+      }
+      db.collection('Players').doc(players[i].id).update({
+        hand: players[i].hand,
+      })
+    }
+    setGameState(GameStateModel.Declaration)
   }
 
   const distribute = async () => {
@@ -129,8 +129,23 @@ const GameScreen: React.FC = () => {
             hand: result.players[i].hand,
           })
         }
+        setGameState(GameStateModel.Memorize)
       }
     }
+  }
+
+  const memorize = async () => {
+    setTimeout(() => {
+      setGameState(GameStateModel.Hide)
+    }, 5000)
+  }
+
+  const declaration = async () => {
+    setGameState(GameStateModel.Cut)
+  }
+
+  const cut = async () => {
+    //setGameState(GameStateModel.Checkwin)
   }
 
   useEffect(() => {
@@ -153,12 +168,22 @@ const GameScreen: React.FC = () => {
   useEffect(() => {
     if (game && !empty) {
       if (isCreator) {
-        startRound()
+        if (gameState == GameStateModel.Checkwin) {
+          if (game.deck.length > 1) setGameState(GameStateModel.Distribute)
+        } else if (gameState == GameStateModel.Distribute) {
+          distribute()
+        } else if (gameState == GameStateModel.Memorize) {
+          memorize()
+        } else if (gameState == GameStateModel.Hide) {
+          hideAll()
+        } else if (gameState == GameStateModel.Declaration) {
+          declaration()
+        } else if (gameState == GameStateModel.Cut) {
+          cut()
+        }
       }
     }
-  }, [game])
-
-  useEffect(() => {}, [players])
+  }, [game, gameState])
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {

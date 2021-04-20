@@ -13,6 +13,8 @@ TODO :
  + text field postion fixe pour annoncer main encore en dessous 
 - implémenter can click or not selon tour du joueur
 - assets cartes et roles
+- implémenter cartes hidden
+- droits de joindre et de lancer les games 
 
 TO DEPLOY
 - persistance login/signup : session -> local

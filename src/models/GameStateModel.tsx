@@ -1,4 +1,5 @@
 enum GameStateModel {
+  Init,
   Start,
   Checkwin,
   Distribute,
