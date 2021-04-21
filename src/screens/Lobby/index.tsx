@@ -113,7 +113,13 @@ const LobbyScreen: React.FC = () => {
 
   useEffect(() => {
     let isActive = true
-    if (gameStarted) redirect()
+    if (gameStarted) {
+      const unsublobby = lobby.onSnapshot(() => {})
+      const unsubgame = game.onSnapshot(() => {})
+      unsublobby()
+      unsubgame()
+      redirect()
+    }
     return () => {
       isActive = false
     }
@@ -139,8 +145,6 @@ const LobbyScreen: React.FC = () => {
       }
     })
   }, [change])
-
-  //useEffect(() => {}, [user])
 
   function start() {
     const start = GameFactory.createGame(userId.length, userId)

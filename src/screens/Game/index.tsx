@@ -41,6 +41,8 @@ const GameScreen: React.FC = () => {
     GameStateModel.Init
   )
   const [empty, setEmpty] = useState<boolean>(true)
+  const [selected, setSelected] = useState<CardModel>()
+  const [clickable, setClickable] = useState<boolean>(false)
 
   const loadGame = async () => {
     gameDoc.onSnapshot((doc) => {
@@ -82,6 +84,23 @@ const GameScreen: React.FC = () => {
     return player.data() as PlayerModel
   }
 
+  // const fetchPlayers = () => { // to implement
+  //   db.collection('Players')
+  //     .where('id', 'in', [
+  //       'J50Ja4BQQAYp2HMQVYVVtoMWC8j1',
+  //       'xXPLGxBh4hgIhhEnUd1cdGSTQrX2',
+  //     ])
+  //     .onSnapshot((doc) => {
+  //       const array: PlayerModel[] = []
+  //       doc.docChanges().forEach((change) => {
+  //         const data = change.doc.data()
+  //         console.log(data)
+  //         array.push(data as PlayerModel)
+  //       })
+  //       setPlayers(array)
+  //     })
+  // }
+
   const fetchPlayers = async () => {
     const array: PlayerModel[] = []
     for (let i = 0; i < playerId.length; i++) {
@@ -105,15 +124,18 @@ const GameScreen: React.FC = () => {
   }
 
   const hideAll = async () => {
-    for (let i = 0; i < players.length; i++) {
-      shuffleArray(players[i].hand)
-      for (let j = 0; j < players[i].hand.length; j++) {
-        players[i].hand[j].hidden = true
+    if (isCreator) {
+      for (let i = 0; i < players.length; i++) {
+        shuffleArray(players[i].hand)
+        for (let j = 0; j < players[i].hand.length; j++) {
+          players[i].hand[j].hidden = true
+        }
+        await db.collection('Players').doc(players[i].id).update({
+          hand: players[i].hand,
+        })
       }
-      db.collection('Players').doc(players[i].id).update({
-        hand: players[i].hand,
-      })
     }
+    await fetchPlayers()
     setGameState(GameStateModel.Declaration)
   }
 
@@ -121,13 +143,15 @@ const GameScreen: React.FC = () => {
     if (game) {
       if (game.deck.length > 1) {
         const result = DistributeCards(game.deck, players, game.round_number)
-        db.collection('Games').doc(id).update({
-          deck: result.deck,
-        })
-        for (let i = 0; i < result.players.length; i++) {
-          db.collection('Players').doc(result.players[i].id).update({
-            hand: result.players[i].hand,
+        if (isCreator) {
+          db.collection('Games').doc(id).update({
+            deck: result.deck,
           })
+          for (let i = 0; i < result.players.length; i++) {
+            db.collection('Players').doc(result.players[i].id).update({
+              hand: result.players[i].hand,
+            })
+          }
         }
         setGameState(GameStateModel.Memorize)
       }
@@ -146,6 +170,20 @@ const GameScreen: React.FC = () => {
 
   const cut = async () => {
     //setGameState(GameStateModel.Checkwin)
+    if (selected == null) {
+      console.log('erreur choissisez un cable a couper')
+    } else {
+      console.log(selected)
+    }
+  }
+
+  const select = (_card: CardModel, _player: PlayerModel) => {
+    console.log(_player)
+    setSelected(_card)
+  }
+
+  const checkWin = () => {
+    setGameState(GameStateModel.Distribute)
   }
 
   useEffect(() => {
@@ -167,20 +205,19 @@ const GameScreen: React.FC = () => {
 
   useEffect(() => {
     if (game && !empty) {
-      if (isCreator) {
-        if (gameState == GameStateModel.Checkwin) {
-          if (game.deck.length > 1) setGameState(GameStateModel.Distribute)
-        } else if (gameState == GameStateModel.Distribute) {
-          distribute()
-        } else if (gameState == GameStateModel.Memorize) {
-          memorize()
-        } else if (gameState == GameStateModel.Hide) {
-          hideAll()
-        } else if (gameState == GameStateModel.Declaration) {
-          declaration()
-        } else if (gameState == GameStateModel.Cut) {
-          cut()
-        }
+      if (gameState == GameStateModel.Checkwin) {
+        setClickable(false)
+        if (game.deck) if (game.deck.length > 1) checkWin()
+      } else if (gameState == GameStateModel.Distribute) {
+        distribute()
+      } else if (gameState == GameStateModel.Memorize) {
+        memorize()
+      } else if (gameState == GameStateModel.Hide) {
+        hideAll()
+      } else if (gameState == GameStateModel.Declaration) {
+        declaration()
+      } else if (gameState == GameStateModel.Cut) {
+        setClickable(true)
       }
     }
   }, [game, gameState])
@@ -202,9 +239,16 @@ const GameScreen: React.FC = () => {
       )}
 
       <Row className="mt-5 ml-5">
-        <PlayersList players={players} id={player?.id} />
+        <PlayersList
+          players={players}
+          id={player?.id}
+          select={(_card: CardModel, _player: PlayerModel) =>
+            select(_card, _player)
+          }
+          clickable={clickable}
+        />
       </Row>
-      {user.id == turn?.id ? <Button></Button> : null}
+      {user.id == turn?.id ? <Button onClick={() => cut()}>Cut</Button> : null}
     </Container>
   )
 }

@@ -8,7 +8,6 @@ const App = () => {
   const Home = lazy(() => import('./screens/Home'))
   const Game = lazy(() => import('./screens/Game'))
   const Lobby = lazy(() => import('./screens/Lobby'))
-  //  const Lobby = lazy(() => Promise.resolve(require('./screens/Lobby')))
   const Login = lazy(() => import('./screens/Login'))
   const Join = lazy(() => import('./screens/Join'))
   const Create = lazy(() => import('./screens/Create'))

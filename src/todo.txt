@@ -15,6 +15,7 @@ TODO :
 - assets cartes et roles
 - implémenter cartes hidden
 - droits de joindre et de lancer les games 
+- quand on cut une carte -> la retourner
 
 TO DEPLOY
 - persistance login/signup : session -> local

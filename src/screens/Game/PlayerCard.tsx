@@ -2,15 +2,23 @@ import PlayerModel from 'models/PlayerModel'
 import React, { FC } from 'react'
 import { Row, ListGroup, Button, Col, Image } from 'react-bootstrap'
 import Card from './Card'
+import CardModel from 'models/CardModel'
 
 interface IProps {
   key: string
   player: PlayerModel
   self: boolean
+  select: (_card: CardModel, _player: PlayerModel) => void
+  clickable: boolean
 }
 
 const PlayerCard: FC<IProps> = (props) => {
-  const { self, player } = props
+  const { self, player, select, clickable } = props
+
+  const pick = (_card: CardModel) => {
+    select(_card, player)
+  }
+
   return (
     <Row>
       <Col>
@@ -23,9 +31,12 @@ const PlayerCard: FC<IProps> = (props) => {
               return (
                 <Card
                   key={card.card_id}
+                  id={card.card_id}
                   type={card.type}
                   hidden={card.hidden}
                   self={self}
+                  select={(_card: CardModel) => pick(_card)}
+                  clickable={clickable}
                 />
               )
             })}

@@ -2,14 +2,17 @@ import PlayerModel from 'models/PlayerModel'
 import React, { FC } from 'react'
 import { ListGroup } from 'react-bootstrap'
 import PlayerCard from './PlayerCard'
+import CardModel from 'models/CardModel'
 
 interface IProps {
   players: PlayerModel[]
   id: string | undefined
+  select: (_card: CardModel, _player: PlayerModel) => void
+  clickable: boolean
 }
 
 const PlayersList: FC<IProps> = (props) => {
-  const { id, players } = props
+  const { id, players, select, clickable } = props
   return (
     <ListGroup>
       {players &&
@@ -18,7 +21,17 @@ const PlayersList: FC<IProps> = (props) => {
           if (player.id == id) {
             self = true
           }
-          return <PlayerCard key={player.id} player={player} self={self} />
+          return (
+            <PlayerCard
+              key={player.id}
+              player={player}
+              self={self}
+              select={(_card: CardModel, _player: PlayerModel) =>
+                select(_card, _player)
+              }
+              clickable={clickable}
+            />
+          )
         })}
     </ListGroup>
   )
